@@ -68,8 +68,9 @@ export default function Hero() {
           transition={{ duration: 1, delay: 0.2 }}
         >
           <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-6">
-            Din Culori - Fotograf Profesionist București
+            Din Culori 
           </h1>
+
           <p className="text-xl md:text-2xl font-light tracking-wide mb-4 max-w-2xl mx-auto">
             Din culori, creez amintiri.
           </p>
