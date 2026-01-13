@@ -37,6 +37,19 @@ const HERO_SLIDES = [
 ];
 
 export default function Hero() {
+  const handleGalleryClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    const targetElement = document.getElementById('gallery');
+    if (targetElement) {
+      const navHeight = 72;
+      const targetPosition = targetElement.getBoundingClientRect().top + window.scrollY - navHeight;
+      window.scrollTo({
+        top: targetPosition,
+        behavior: 'smooth'
+      });
+    }
+  };
+
   return (
     <section className="relative h-screen flex items-center justify-center overflow-hidden">
       {/* Background Carousel Layer */}
@@ -62,9 +75,10 @@ export default function Hero() {
           </p>
           <motion.a
             href="#gallery"
+            onClick={handleGalleryClick}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="inline-block px-8 py-4 bg-white text-gray-900 font-medium rounded-full hover:bg-gray-100 transition-colors"
+            className="inline-block px-8 py-4 bg-primary text-primary-foreground font-medium rounded-full hover:opacity-90 transition-all shadow-lg"
           >
             Vezi galerie
           </motion.a>

@@ -72,6 +72,7 @@ export default function Gallery() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(8);
   const galleryRef = useRef<HTMLElement>(null);
+  const isFirstMount = useRef(true);
 
   const categories = ['all', 'food', 'concert', 'wedding', 'random'];
 
@@ -112,8 +113,12 @@ export default function Gallery() {
     setCurrentPage(1);
   }, [selectedCategory, itemsPerPage]);
 
-  // Scroll to top of gallery when page changes
+  // Scroll to top of gallery when page changes (but not on initial mount)
   useEffect(() => {
+    if (isFirstMount.current) {
+      isFirstMount.current = false;
+      return;
+    }
     if (galleryRef.current) {
       galleryRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
@@ -137,7 +142,7 @@ export default function Gallery() {
   };
 
   return (
-    <section ref={galleryRef} id="gallery" className="py-20 bg-gray-50">
+    <section ref={galleryRef} id="gallery" className="py-20 bg-secondary/30">
       <div className="container mx-auto px-6 lg:px-12">
         {/* Section Title */}
         <motion.div
@@ -146,8 +151,8 @@ export default function Gallery() {
           viewport={{ once: true }}
           className="text-center mb-12"
         >
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">Galerie</h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
+          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">Galerie</h2>
+          <p className="text-muted-foreground max-w-2xl mx-auto">
             Exploreaza colectia mea de momente capturat in diferite genuri
           </p>
         </motion.div>
@@ -160,8 +165,8 @@ export default function Gallery() {
               onClick={() => setSelectedCategory(category)}
               className={`px-6 py-2 rounded-full font-medium transition-all ${
                 selectedCategory === category
-                  ? 'bg-gray-900 text-white'
-                  : 'bg-white text-gray-900 hover:bg-gray-200'
+                  ? 'bg-primary text-primary-foreground shadow-md'
+                  : 'bg-card text-foreground border-2 border-border hover:bg-secondary'
               }`}
             >
               {category.charAt(0).toUpperCase() + category.slice(1)}
@@ -212,10 +217,10 @@ export default function Gallery() {
               onClick={handlePreviousPage}
               disabled={currentPage === 1}
               aria-label="Previous page"
-              className={`p-2 rounded-full border transition-all ${
+              className={`p-2 rounded-full border-2 transition-all ${
                 currentPage === 1
-                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                  : 'bg-white text-gray-900 border-gray-300 hover:bg-gray-100'
+                  ? 'bg-muted text-muted-foreground cursor-not-allowed border-border'
+                  : 'bg-card text-foreground border-border hover:bg-secondary'
               }`}
             >
               <ChevronLeft className="w-5 h-5" />
@@ -230,8 +235,8 @@ export default function Gallery() {
                 aria-current={currentPage === page ? 'page' : undefined}
                 className={`w-10 h-10 rounded-full font-medium transition-all ${
                   currentPage === page
-                    ? 'bg-gray-900 text-white'
-                    : 'bg-white text-gray-900 border border-gray-300 hover:bg-gray-100'
+                    ? 'bg-primary text-primary-foreground shadow-md'
+                    : 'bg-card text-foreground border-2 border-border hover:bg-secondary'
                 }`}
               >
                 {page}
@@ -243,10 +248,10 @@ export default function Gallery() {
               onClick={handleNextPage}
               disabled={currentPage === totalPages}
               aria-label="Next page"
-              className={`p-2 rounded-full border transition-all ${
+              className={`p-2 rounded-full border-2 transition-all ${
                 currentPage === totalPages
-                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                  : 'bg-white text-gray-900 border-gray-300 hover:bg-gray-100'
+                  ? 'bg-muted text-muted-foreground cursor-not-allowed border-border'
+                  : 'bg-card text-foreground border-border hover:bg-secondary'
               }`}
             >
               <ChevronRight className="w-5 h-5" />

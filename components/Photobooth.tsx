@@ -6,6 +6,19 @@ import { Camera, Gift, Monitor, Sparkles, Check, Star, Package, Award, Crown } f
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 
 export default function Photobooth() {
+  const handleContactClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    const targetElement = document.getElementById('contact');
+    if (targetElement) {
+      const navHeight = 72;
+      const targetPosition = targetElement.getBoundingClientRect().top + window.scrollY - navHeight;
+      window.scrollTo({
+        top: targetPosition,
+        behavior: 'smooth'
+      });
+    }
+  };
+
   const features = [
     {
       icon: Camera,
@@ -63,7 +76,7 @@ export default function Photobooth() {
         'Poze printate si digitale nelimitate',
         'Asistent foto',
         'Integrare trimitere poze pe email',
-        'Galerie online cu parola 3 luni',
+        'Galerie online cu parola 2 luni',
         'Tip poza: Un singur model (Collage, Strips sau Single)',
         'Design poza personalizat: Din catalog Standard + optional poza bebelusul predefinita',
         'Fundal poza: Textil/Digital',
@@ -87,7 +100,7 @@ export default function Photobooth() {
         'Poze printate si digitale nelimitate',
         'Asistent foto',
         'Integrare trimitere poze pe email',
-        'Galerie online cu parola 12 luni',
+        'Galerie online cu parola 3 luni',
         'Tip poza: Orice Combinatie (Collage, Strips sau Single)',
         'Design poza personalizat: Unicat + optional poza cu parintii si bebelusul LIVE de la eveniment',
         'Fundal poza: Textil/Premium/Digital',
@@ -109,7 +122,7 @@ export default function Photobooth() {
   return (
     <section id="photobooth" className="relative py-32 overflow-hidden">
       {/* Animated Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900">
+      <div className="absolute inset-0 bg-gradient-to-br from-foreground via-purple-900 to-foreground">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjAzIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-40" />
       </div>
 
@@ -330,6 +343,7 @@ export default function Photobooth() {
                       {/* CTA Button */}
                       <a
                         href="#contact"
+                        onClick={handleContactClick}
                         className={`relative block w-full py-4 rounded-xl font-bold text-center transition-all duration-300 ${
                           tier.popular
                             ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50'
@@ -415,6 +429,7 @@ export default function Photobooth() {
                 {/* CTA Button */}
                 <motion.a
                   href="#contact"
+                  onClick={handleContactClick}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   className={`relative block w-full py-4 rounded-xl font-bold text-center transition-all duration-300 ${

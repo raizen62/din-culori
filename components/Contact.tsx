@@ -35,7 +35,7 @@ export default function Contact() {
   ];
 
   return (
-    <section id="contact" className="py-20 bg-gray-50">
+    <section id="contact" className="py-20 bg-secondary/30">
       <div className="container mx-auto px-6 lg:px-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -43,8 +43,8 @@ export default function Contact() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">Contactează-mă</h2>
-          <p className="text-gray-600 max-w-2xl mx-auto text-lg">
+          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">Contactează-mă</h2>
+          <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
             Ai un proiect în minte? Contactează-mă prin telefon, WhatsApp sau Instagram și hai să discutăm!
           </p>
         </motion.div>
@@ -65,13 +65,13 @@ export default function Contact() {
                 whileHover={{ scale: 1.05, y: -5 }}
                 className="group"
               >
-                <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 h-full flex flex-col items-center text-center">
+                <div className="bg-card rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 h-full flex flex-col items-center text-center border border-border">
                   <div className={`w-20 h-20 ${method.bgColor} ${method.hoverColor} rounded-2xl flex items-center justify-center text-white mb-6 transition-colors`}>
                     <Icon size={36} />
                   </div>
-                  <h3 className="text-2xl font-semibold mb-2">{method.title}</h3>
-                  <p className="text-gray-500 text-sm mb-3">{method.description}</p>
-                  <p className="text-gray-900 font-medium text-lg">{method.value}</p>
+                  <h3 className="text-2xl font-semibold mb-2 text-foreground">{method.title}</h3>
+                  <p className="text-muted-foreground text-sm mb-3">{method.description}</p>
+                  <p className="text-foreground font-medium text-lg">{method.value}</p>
                 </div>
               </motion.a>
             );
@@ -85,7 +85,7 @@ export default function Contact() {
           transition={{ delay: 0.4 }}
           className="text-center mt-12"
         >
-          <p className="text-gray-600">
+          <p className="text-muted-foreground">
             <span className="font-medium">Locație:</span> Bucuresti, România
           </p>
         </motion.div>

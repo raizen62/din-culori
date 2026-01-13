@@ -5,7 +5,7 @@ import Image from 'next/image';
 
 export default function About() {
   return (
-    <section id="about" className="py-20 bg-white">
+    <section id="about" className="py-20 bg-background">
       <div className="container mx-auto px-6 lg:px-12">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Image */}
@@ -17,7 +17,7 @@ export default function About() {
             className="relative aspect-square rounded-lg overflow-hidden"
           >
             {/* Placeholder - Replace with your photo */}
-            <div className="w-full h-full bg-gradient-to-br from-gray-300 to-gray-400 flex items-center justify-center">
+            <div className="w-full h-full bg-gradient-to-br from-secondary to-accent flex items-center justify-center">
               <Image src="/poza-profil.jpg" alt="About Me" width={500} height={500} />
             </div>
           </motion.div>
@@ -29,8 +29,8 @@ export default function About() {
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">Despre mine</h2>
-            <div className="space-y-4 text-gray-600 leading-relaxed">
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-foreground">Despre mine</h2>
+            <div className="space-y-4 text-muted-foreground leading-relaxed">
               <p>
                 Bine ai venit la Din Culori, unde fiecare fotografie spune o poveste unică prin lentila creativității și a pasiunii. Cu ani de experiență în surprinderea celor mai prețioase momente ale vieții, sunt specializat în crearea unor imagini atemporale, pe care le vei prețui pentru totdeauna.
               </p>

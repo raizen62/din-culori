@@ -25,13 +25,34 @@ export default function Navigation() {
     { name: 'Contact', href: '#contact' },
   ];
 
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (href.startsWith('#')) {
+      e.preventDefault();
+      const targetId = href.substring(1);
+      const targetElement = document.getElementById(targetId);
+
+      if (targetElement) {
+        const navHeight = 72; // Offset for fixed navbar
+        const targetPosition = targetElement.getBoundingClientRect().top + window.scrollY - navHeight;
+
+        window.scrollTo({
+          top: targetPosition,
+          behavior: 'smooth'
+        });
+      }
+
+      // Close mobile menu after click
+      setIsMobileMenuOpen(false);
+    }
+  };
+
   return (
     <motion.nav
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? 'bg-white/95 backdrop-blur-md shadow-md py-4 text-gray-900'
+          ? 'bg-background/95 backdrop-blur-md shadow-md py-4 text-foreground'
           : 'bg-transparent py-6 text-white'
       }`}
     >
@@ -48,8 +69,9 @@ export default function Navigation() {
               <Link
                 key={link.name}
                 href={link.href}
+                onClick={(e) => handleNavClick(e, link.href)}
                 className={`text-sm font-medium transition-colors ${
-                  isScrolled ? 'hover:text-gray-600' : 'hover:text-gray-300'
+                  isScrolled ? 'hover:text-primary' : 'hover:text-gray-300'
                 }`}
               >
                 {link.name}
@@ -61,14 +83,14 @@ export default function Navigation() {
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             className={`md:hidden p-2 rounded-lg transition-colors ${
-              isScrolled ? 'hover:bg-gray-100' : 'hover:bg-white/10'
+              isScrolled ? 'hover:bg-secondary' : 'hover:bg-white/10'
             }`}
             aria-label="Toggle menu"
           >
             {isMobileMenuOpen ? (
-              <X className={`w-6 h-6 ${isScrolled ? 'text-gray-900' : 'text-white'}`} />
+              <X className={`w-6 h-6 ${isScrolled ? 'text-foreground' : 'text-white'}`} />
             ) : (
-              <Menu className={`w-6 h-6 ${isScrolled ? 'text-gray-900' : 'text-white'}`} />
+              <Menu className={`w-6 h-6 ${isScrolled ? 'text-foreground' : 'text-white'}`} />
             )}
           </button>
         </div>
@@ -79,16 +101,16 @@ export default function Navigation() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             className={`md:hidden mt-4 pt-4 border-t ${
-              isScrolled ? 'border-gray-200' : 'border-white/20'
+              isScrolled ? 'border-border' : 'border-white/20'
             }`}
           >
             {navLinks.map((link) => (
               <Link
                 key={link.name}
                 href={link.href}
-                onClick={() => setIsMobileMenuOpen(false)}
+                onClick={(e) => handleNavClick(e, link.href)}
                 className={`block py-3 text-sm font-medium transition-colors ${
-                  isScrolled ? 'hover:text-gray-600' : 'hover:text-gray-300'
+                  isScrolled ? 'hover:text-primary' : 'hover:text-gray-300'
                 }`}
               >
                 {link.name}
