@@ -18,7 +18,7 @@ export default function About() {
           >
             {/* Placeholder - Replace with your photo */}
             <div className="w-full h-full bg-gradient-to-br from-secondary to-accent flex items-center justify-center">
-              <Image src="/poza-profil.jpg" alt="About Me" width={500} height={500} />
+              <Image src="/poza-profil.jpg" alt="Din Culori - Fotograf profesionist București specializat în nunți, portrete și evenimente" width={500} height={500} />
             </div>
           </motion.div>
 

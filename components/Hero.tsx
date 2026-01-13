@@ -7,32 +7,32 @@ const HERO_SLIDES = [
   {
     id: 2,
     src: '/images/carousel/carousel_2.jpg',
-    alt: 'Din Culori Photography - Slide 2'
+    alt: 'Fotografie profesională de nuntă București - Momentele tale speciale capturate artistic de Din Culori'
   },
   {
     id: 1,
     src: '/images/carousel/carousel_1.jpg',
-    alt: 'Din Culori Photography - Slide 1'
+    alt: 'Portret profesional București - Fotografie artistică și creativă de calitate superioară'
   },
   {
     id: 3,
     src: '/images/carousel/carousel_3.jpg',
-    alt: 'Din Culori Photography - Slide 3'
+    alt: 'Fotograf evenimente București - Servicii foto profesionale pentru momente de neuitat'
   },
   {
     id: 4,
     src: '/images/carousel/carousel_4.jpg',
-    alt: 'Din Culori Photography - Slide 4'
+    alt: 'Ședință foto creativă București - Fotografie artistică cu atenție la detalii'
   },
   {
     id: 5,
     src: '/images/carousel/carousel_5.jpg',
-    alt: 'Din Culori Photography - Slide 5'
+    alt: 'Fotografie de nuntă naturală și emoțională - Din Culori Photography București'
   },
   {
     id: 6,
     src: '/images/carousel/carousel_6.jpg',
-    alt: 'Din Culori Photography - Slide 6'
+    alt: 'Povestea ta în imagini - Fotograf profesionist specializat în evenimente speciale'
   },
 ];
 
@@ -68,10 +68,13 @@ export default function Hero() {
           transition={{ duration: 1, delay: 0.2 }}
         >
           <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-6">
-            Din Culori
+            Din Culori - Fotograf Profesionist București
           </h1>
-          <p className="text-xl md:text-2xl font-light tracking-wide mb-8 max-w-2xl mx-auto">
+          <p className="text-xl md:text-2xl font-light tracking-wide mb-4 max-w-2xl mx-auto">
             Din culori, creez amintiri.
+          </p>
+          <p className="text-lg md:text-xl font-light tracking-wide mb-8 max-w-3xl mx-auto">
+            Fotograf specializat în nunți, portrete, evenimente și ședințe foto creative în București și România
           </p>
           <motion.a
             href="#gallery"
