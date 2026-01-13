@@ -1,0 +1,39 @@
+name: Build and publish static export
+
+on:
+  push:
+    branches: [ "main" ]  # change if your default branch differs
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Build (Next export)
+        run: npm run build
+
+      - name: Publish /out to deploy branch
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: deploy
+          publish_dir: ./out
+          force_orphan: true
+          # optional: keep .nojekyll (helps on GH Pages; harmless elsewhere)
+          enable_jekyll: false
