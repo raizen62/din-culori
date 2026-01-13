@@ -34,6 +34,3 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: deploy
           publish_dir: ./out
-          force_orphan: true
-          # optional: keep .nojekyll (helps on GH Pages; harmless elsewhere)
-          enable_jekyll: false
