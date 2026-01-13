@@ -1,0 +1,23 @@
+# robots.txt for www.din-culori.ro
+
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /_next/
+Allow: /_next/static/
+
+# Sitemap
+Sitemap: https://www.din-culori.ro/sitemap.xml
+
+# Crawl-delay for respectful crawling
+Crawl-delay: 1
+
+# Major search engines
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
