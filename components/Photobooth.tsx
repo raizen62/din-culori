@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { Camera, Gift, Monitor, Sparkles, Check, Star, Package, Award, Crown } from 'lucide-react';
+import { Camera, Gift, Monitor, Sparkles, Check, Star, Package, Award, Crown, TrendingUp } from 'lucide-react';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 
 export default function Photobooth() {
@@ -17,6 +17,20 @@ export default function Photobooth() {
         behavior: 'smooth'
       });
     }
+  };
+
+  const renderFeature = (feature: string) => {
+    const hasUpgrade = feature.includes('(upgraded)');
+    const cleanText = feature.replace(' (upgraded)', '');
+
+    return (
+      <>
+        {cleanText}
+        {hasUpgrade && (
+          <TrendingUp className="inline-block w-3.5 h-3.5 ml-1.5 text-yellow-400 -mt-0.5" />
+        )}
+      </>
+    );
   };
 
   const features = [
@@ -73,10 +87,8 @@ export default function Photobooth() {
       popular: true,
       gradient: 'from-purple-500 to-pink-500',
       features: [
-        'Poze printate si digitale nelimitate',
-        'Asistent foto',
-        'Integrare trimitere poze pe email',
-        'Galerie online cu parola 2 luni',
+        'Toate din Basic',
+        'Galerie online cu parola 2 luni (upgraded)',
         'Tip poza: Un singur model (Collage, Strips sau Single)',
         'Design poza personalizat: Din catalog Standard + optional poza bebelusul predefinita',
         'Fundal poza: Textil/Digital',
@@ -97,20 +109,15 @@ export default function Photobooth() {
       popular: false,
       gradient: 'from-yellow-400 to-orange-500',
       features: [
-        'Poze printate si digitale nelimitate',
-        'Asistent foto',
-        'Integrare trimitere poze pe email',
-        'Galerie online cu parola 3 luni',
+        'Toate din Standard',
+        'Galerie online cu parola 3 luni (upgraded)',
         'Tip poza: Orice Combinatie (Collage, Strips sau Single)',
         'Design poza personalizat: Unicat + optional poza cu parintii si bebelusul LIVE de la eveniment',
         'Fundal poza: Textil/Premium/Digital',
         'Accesorii fizice: 60 buc',
-        'Plicuri pentru poze: nelimitat',
-        'Benzi magnetice: Nelimitat',
         'Guestbook: Premium la alegere',
         'Placute cu mesaje: 10 buc. personalizate',
-        'GIF',
-        'Reducere eveniment viitor: 20%',
+        'Reducere eveniment viitor: 20% (upgraded)',
         'Ecran 27 inch',
         'Accesorii digitale',
         'Design Ecran + Kiosk',
@@ -335,7 +342,7 @@ export default function Photobooth() {
                             <div className={`flex-shrink-0 w-5 h-5 rounded-full bg-gradient-to-br ${tier.gradient} flex items-center justify-center mt-0.5`}>
                               <Check className="w-3 h-3 text-white" />
                             </div>
-                            <span className="text-gray-200 text-sm leading-relaxed">{feature}</span>
+                            <span className="text-gray-200 text-sm leading-relaxed">{renderFeature(feature)}</span>
                           </li>
                         ))}
                       </ul>
@@ -421,7 +428,7 @@ export default function Photobooth() {
                       <div className={`flex-shrink-0 w-5 h-5 rounded-full bg-gradient-to-br ${tier.gradient} flex items-center justify-center mt-0.5`}>
                         <Check className="w-3 h-3 text-white" />
                       </div>
-                      <span className="text-gray-200 text-sm leading-relaxed">{feature}</span>
+                      <span className="text-gray-200 text-sm leading-relaxed">{renderFeature(feature)}</span>
                     </motion.li>
                   ))}
                 </ul>
