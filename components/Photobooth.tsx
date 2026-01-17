@@ -73,7 +73,7 @@ export default function Photobooth() {
       popular: true,
       gradient: 'from-purple-500 to-pink-500',
       features: [
-        'All of Basic',
+        'Toate din Basic',
         'Galerie online cu parola 2 luni (upgraded)',
         'Tip poza: Un singur model (Collage, Strips sau Single)',
         'Design poza personalizat: Din catalog Standard + optional poza bebelusul predefinita',
@@ -95,7 +95,7 @@ export default function Photobooth() {
       popular: false,
       gradient: 'from-yellow-400 to-orange-500',
       features: [
-        'All of Standard',
+        'Toate din Standard',
         'Galerie online cu parola 3 luni (upgraded)',
         'Tip poza: Orice Combinatie (Collage, Strips sau Single)',
         'Design poza personalizat: Unicat + optional poza cu parintii si bebelusul LIVE de la eveniment',
