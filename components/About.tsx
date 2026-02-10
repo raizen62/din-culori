@@ -5,19 +5,18 @@ import Image from 'next/image';
 
 export default function About() {
   return (
-    <section id="about" className="py-20 bg-background">
+    <section id="about" className="py-20 bg-background overflow-hidden">
       <div className="container mx-auto px-6 lg:px-12">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div className="grid justify-center grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Image */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="relative aspect-square rounded-lg overflow-hidden"
+            className="relative overflow-hidden"
           >
-            {/* Placeholder - Replace with your photo */}
-            <div className="w-full h-full bg-gradient-to-br from-secondary to-accent flex items-center justify-center">
+            <div className="w-fit  rounded-lg bg-linear-to-br p-2 from-secondary to-accent flex items-center justify-center">
               <Image src="/poza-profil.jpg" alt="Din Culori - Fotograf profesionist București specializat în nunți, portrete și evenimente" width={500} height={500} />
             </div>
           </motion.div>

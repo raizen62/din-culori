@@ -1,11 +1,46 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { Camera, Gift, Monitor, Sparkles, Check, Star, Package, Award, Crown, TrendingUp } from 'lucide-react';
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
+import type { CarouselApi } from '@/components/ui/carousel';
+import Autoplay from 'embla-carousel-autoplay';
+
+type PhotoFormat = '10x15' | 'strip';
+
+interface PhotoboothSlide {
+  id: number;
+  src: string;
+  alt: string;
+  format: PhotoFormat;
+}
+
+const PHOTOBOOTH_SLIDES: PhotoboothSlide[] = [
+  { id: 1, src: '/photobooth.jpeg', alt: 'Photobooth Premium', format: '10x15' },
+  // Add more slides here, e.g.:
+  { id: 2, src: '/photobooth_strip1.png', alt: 'Photobooth Strip', format: 'strip' },
+];
 
 export default function Photobooth() {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isLargeScreen, setIsLargeScreen] = useState(false);
+  const currentFormat = PHOTOBOOTH_SLIDES[currentSlide]?.format ?? '10x15';
+
+  useEffect(() => {
+    const check = () => setIsLargeScreen(window.innerWidth >= 1024);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
+
+  const handleCarouselApi = (api: CarouselApi) => {
+    if (!api) return;
+    setCurrentSlide(api.selectedScrollSnap());
+    api.on('select', () => setCurrentSlide(api.selectedScrollSnap()));
+  };
+
   const handleContactClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     const targetElement = document.getElementById('contact');
@@ -74,7 +109,7 @@ export default function Photobooth() {
         'Integrare trimitere poze pe email',
         'Galerie online cu parola 1 luna',
         'Tip poza: Un singur model (Collage sau Strips)',
-        'Design poza personalizat: Din catalog Basic cu 15+ modele diferite',
+        'Design poza personalizat',
         'Fundal poza: Textil',
         'Accesorii fizice: 15 buc'
       ]
@@ -90,12 +125,11 @@ export default function Photobooth() {
         'Toate din Basic',
         'Galerie online cu parola 2 luni (upgraded)',
         'Tip poza: Un singur model (Collage, Strips sau Single)',
-        'Design poza personalizat: Din catalog Standard + optional poza bebelusul predefinita',
+        'Design poza personalizat',
         'Fundal poza: Textil/Digital',
         'Accesorii fizice: 30 buc',
         'Plicuri pentru poze: nelimitat',
         'Benzi magnetice: Nelimitat',
-        'Guestbook: Standard',
         'Placute cu mesaje: Standard',
         'GIF',
         'Reducere eveniment viitor: 10%'
@@ -112,15 +146,13 @@ export default function Photobooth() {
         'Toate din Standard',
         'Galerie online cu parola 3 luni (upgraded)',
         'Tip poza: Orice Combinatie (Collage, Strips sau Single)',
-        'Design poza personalizat: Unicat + optional poza cu parintii si bebelusul LIVE de la eveniment',
-        'Fundal poza: Textil/Premium/Digital',
-        'Accesorii fizice: 60 buc',
-        'Guestbook: Premium la alegere',
+        'Design poza personalizat: Unicat',
+        'Accesorii fizice: 60 buc (upgraded)',
         'Placute cu mesaje: 10 buc. personalizate',
         'Reducere eveniment viitor: 20% (upgraded)',
         'Ecran 27 inch',
         'Accesorii digitale',
-        'Design Ecran + Kiosk',
+        'Design Ecran',
         'Social Share Station'
       ]
     }
@@ -191,7 +223,15 @@ export default function Photobooth() {
           </p>
         </motion.div>
 
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
+        <div
+          className="grid gap-16 items-center"
+          style={{
+            gridTemplateColumns: isLargeScreen
+              ? (currentFormat === 'strip' ? '1fr 8fr' : '1fr 1fr')
+              : '1fr',
+            transition: 'grid-template-columns 0.4s ease-in-out',
+          }}
+        >
           {/* Image Side */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
@@ -200,28 +240,80 @@ export default function Photobooth() {
             transition={{ duration: 0.8 }}
             className="relative"
           >
-            <div className="relative w-full rounded-3xl overflow-hidden shadow-2xl ring-4 ring-white/10"
-                 style={{ aspectRatio: '15/10' }}>
-              <Image
-                src="/photobooth.jpeg"
-                alt="Photobooth Premium"
-                fill
-                className="object-cover"
-              />
-              {/* Gradient Overlay on Image */}
-              <div className="absolute inset-0 bg-gradient-to-t from-purple-900/40 via-transparent to-transparent" />
-            </div>
+            {/* Photo Carousel */}
+            <div>
+              <div
+                className={`relative ${!isLargeScreen && currentFormat === 'strip'
+                  ? 'w-[45%] mx-auto'
+                  : 'w-full'
+                  }`}
+              >
+                <div
+                  className="relative rounded-3xl overflow-hidden shadow-2xl ring-4 ring-white/10 w-full"
+                  style={{
+                    aspectRatio: currentFormat === 'strip' ? '2/6' : '15/10',
+                    transition: 'aspect-ratio 0.4s ease-in-out',
+                  }}
+                >
+                  <div className="absolute inset-0">
+                    <Carousel
+                      setApi={handleCarouselApi}
+                      plugins={[Autoplay({ delay: 4000, stopOnInteraction: true })]}
+                      opts={{ loop: true, align: 'center' }}
+                      className="w-full h-full [&>[data-slot='carousel-content']]:h-full"
+                    >
+                      <CarouselContent className="m-0 h-full">
+                        {PHOTOBOOTH_SLIDES.map((slide) => (
+                          <CarouselItem key={slide.id} className="p-0 basis-full h-full">
+                            <div className="relative w-full h-full">
+                              <Image
+                                src={slide.src}
+                                alt={slide.alt}
+                                fill
+                                className="object-cover"
+                              />
+                              {/* Gradient overlay */}
+                              <div className="absolute inset-0 bg-gradient-to-t from-purple-900/40 via-transparent to-transparent pointer-events-none" />
+                              {/* Format badge */}
+                              <div className="absolute bottom-3 left-3 bg-black/50 backdrop-blur-sm text-white/80 text-xs font-medium px-2.5 py-1 rounded-full">
+                                {slide.format === 'strip' ? '2×6 Strip' : '10×15'}
+                              </div>
+                            </div>
+                          </CarouselItem>
+                        ))}
+                      </CarouselContent>
+                    </Carousel>
+                  </div>
+                </div>
 
-            {/* Floating Badge */}
-            <motion.div
-              initial={{ scale: 0, rotate: -180 }}
-              whileInView={{ scale: 1, rotate: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              className="absolute -top-6 -right-6 bg-gradient-to-br from-yellow-400 to-orange-500 text-gray-900 px-8 py-4 rounded-2xl shadow-2xl font-bold text-lg transform rotate-6"
-            >
-              ✨ Premium
-            </motion.div>
+                {/* Floating Badge */}
+                <motion.div
+                  initial={{ scale: 0, rotate: -180 }}
+                  whileInView={{ scale: 1, rotate: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: 0.4 }}
+                  className={`absolute -right-4 bg-gradient-to-br from-yellow-400 to-orange-500 text-gray-900 rounded-xl shadow-2xl font-bold text-sm transform rotate-6 whitespace-nowrap ${currentFormat === 'strip'
+                    ? '-top-10 px-4 py-2 md:-top-8 md:-right-4 md:px-5 md:py-2 md:text-sm'
+                    : '-top-4 px-4 py-2 md:-top-6 md:-right-6 md:px-8 md:py-4 md:text-lg md:rounded-2xl'
+                    }`}
+                >
+                  ✨ Premium
+                </motion.div>
+              </div>
+
+              {/* Dot indicators */}
+              {PHOTOBOOTH_SLIDES.length > 1 && (
+                <div className="flex justify-center gap-2 mt-3">
+                  {PHOTOBOOTH_SLIDES.map((_, i) => (
+                    <div
+                      key={i}
+                      className={`rounded-full transition-all duration-300 ${i === currentSlide ? 'w-6 h-2 bg-white' : 'w-2 h-2 bg-white/40'
+                        }`}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
           </motion.div>
 
           {/* Features Grid */}
@@ -302,9 +394,8 @@ export default function Photobooth() {
                         type: "spring",
                         stiffness: 100
                       }}
-                      className={`relative bg-white/10 backdrop-blur-md rounded-3xl border ${
-                        tier.popular ? 'border-purple-400/50 shadow-2xl shadow-purple-500/20' : 'border-white/20'
-                      } p-8 overflow-hidden group`}
+                      className={`relative bg-white/10 backdrop-blur-md rounded-3xl border ${tier.popular ? 'border-purple-400/50 shadow-2xl shadow-purple-500/20' : 'border-white/20'
+                        } p-8 overflow-hidden group`}
                     >
                       {/* Popular Badge */}
                       {tier.popular && (
@@ -351,11 +442,10 @@ export default function Photobooth() {
                       <a
                         href="#contact"
                         onClick={handleContactClick}
-                        className={`relative block w-full py-4 rounded-xl font-bold text-center transition-all duration-300 ${
-                          tier.popular
-                            ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50'
-                            : 'bg-white/10 text-white border border-white/30 hover:bg-white/20 hover:border-white/50'
-                        }`}
+                        className={`relative block w-full py-4 rounded-xl font-bold text-center transition-all duration-300 ${tier.popular
+                          ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50'
+                          : 'bg-white/10 text-white border border-white/30 hover:bg-white/20 hover:border-white/50'
+                          }`}
                       >
                         Solicită ofertă
                       </a>
@@ -384,9 +474,8 @@ export default function Photobooth() {
                   stiffness: 100
                 }}
                 whileHover={{ y: -10, scale: 1.02 }}
-                className={`relative bg-white/10 backdrop-blur-md rounded-3xl border ${
-                  tier.popular ? 'border-purple-400/50 shadow-2xl shadow-purple-500/20' : 'border-white/20'
-                } p-8 overflow-hidden group`}
+                className={`relative bg-white/10 backdrop-blur-md rounded-3xl border ${tier.popular ? 'border-purple-400/50 shadow-2xl shadow-purple-500/20' : 'border-white/20'
+                  } p-8 overflow-hidden group`}
               >
                 {/* Popular Badge */}
                 {tier.popular && (
@@ -439,11 +528,10 @@ export default function Photobooth() {
                   onClick={handleContactClick}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className={`relative block w-full py-4 rounded-xl font-bold text-center transition-all duration-300 ${
-                    tier.popular
-                      ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50'
-                      : 'bg-white/10 text-white border border-white/30 hover:bg-white/20 hover:border-white/50'
-                  }`}
+                  className={`relative block w-full py-4 rounded-xl font-bold text-center transition-all duration-300 ${tier.popular
+                    ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50'
+                    : 'bg-white/10 text-white border border-white/30 hover:bg-white/20 hover:border-white/50'
+                    }`}
                 >
                   Solicită ofertă
                 </motion.a>

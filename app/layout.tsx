@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
@@ -9,6 +10,11 @@ const poppins = Poppins({
   weight: ['300', '400', '500', '600', '700'],
   subsets: ["latin"],
   variable: "--font-poppins",
+});
+
+const shinier = localFont({
+  src: "../public/fonts/Shinier-Regular.ttf",
+  variable: "--font-shinier",
 });
 
 export const metadata: Metadata = {
@@ -87,7 +93,7 @@ export default function RootLayout({
         <StructuredData />
       </head>
       <body
-        className={`${poppins.variable} font-sans antialiased bg-white text-gray-900`}
+        className={`${poppins.variable} ${shinier.variable} font-sans antialiased bg-white text-gray-900`}
       >
         <Navigation />
         {children}

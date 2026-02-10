@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
+import Image from 'next/image';
 
 export default function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -47,20 +48,18 @@ export default function Navigation() {
   };
 
   return (
-    <motion.nav
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
-          ? 'bg-background/95 backdrop-blur-md shadow-md py-4 text-foreground'
-          : 'bg-transparent py-6 text-white'
-      }`}
+    <nav
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled
+        ? 'bg-background/95 backdrop-blur-md shadow-md py-4 text-foreground'
+        : 'bg-transparent py-6 text-white'
+        }`}
     >
       <div className="container mx-auto px-6 lg:px-12">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="text-2xl font-semibold tracking-tight hover:opacity-70 transition-opacity">
-            Din Culori
+          <Link href="/" className="flex items-center gap-4 hover:opacity-70 transition-opacity">
+            <Image src="/logo.png" alt="Din culori" width={75} height={75} className="w-8 h-8 md:w-[75px] md:h-[75px]" />
+            <span className="text-2xl tracking-tight font-shinier">Din culori</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -70,9 +69,8 @@ export default function Navigation() {
                 key={link.name}
                 href={link.href}
                 onClick={(e) => handleNavClick(e, link.href)}
-                className={`text-sm font-medium transition-colors ${
-                  isScrolled ? 'hover:text-primary' : 'hover:text-gray-300'
-                }`}
+                className={`text-sm font-medium transition-colors ${isScrolled ? 'hover:text-primary' : 'hover:text-gray-300'
+                  }`}
               >
                 {link.name}
               </Link>
@@ -82,9 +80,8 @@ export default function Navigation() {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className={`md:hidden p-2 rounded-lg transition-colors ${
-              isScrolled ? 'hover:bg-secondary' : 'hover:bg-white/10'
-            }`}
+            className={`md:hidden p-2 rounded-lg transition-colors ${isScrolled ? 'hover:bg-secondary' : 'hover:bg-white/10'
+              }`}
             aria-label="Toggle menu"
           >
             {isMobileMenuOpen ? (
@@ -100,18 +97,16 @@ export default function Navigation() {
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
-            className={`md:hidden mt-4 pt-4 border-t ${
-              isScrolled ? 'border-border' : 'border-white/20'
-            }`}
+            className={`md:hidden mt-4 pt-4 border-t ${isScrolled ? 'border-border' : 'border-white/20'
+              }`}
           >
             {navLinks.map((link) => (
               <Link
                 key={link.name}
                 href={link.href}
                 onClick={(e) => handleNavClick(e, link.href)}
-                className={`block py-3 text-sm font-medium transition-colors ${
-                  isScrolled ? 'hover:text-primary' : 'hover:text-gray-300'
-                }`}
+                className={`block py-3 text-sm font-medium transition-colors ${isScrolled ? 'hover:text-primary' : 'hover:text-gray-300'
+                  }`}
               >
                 {link.name}
               </Link>
@@ -119,6 +114,6 @@ export default function Navigation() {
           </motion.div>
         )}
       </div>
-    </motion.nav>
+    </nav>
   );
 }
