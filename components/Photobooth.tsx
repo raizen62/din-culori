@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { Camera, Gift, Monitor, Sparkles, Check, Star, Package, Award, Crown, TrendingUp } from 'lucide-react';
+import { Camera, Gift, Monitor, Sparkles, Check, Star, Package, Award, Crown, TrendingUp, Cake } from 'lucide-react';
 import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
 import type { CarouselApi } from '@/components/ui/carousel';
 import Autoplay from 'embla-carousel-autoplay';
@@ -97,9 +97,27 @@ export default function Photobooth() {
 
   const pricingTiers = [
     {
+      name: 'Kids party',
+      duration: '2 ore',
+      price: '800',
+      icon: Cake,
+      popular: false,
+      gradient: 'from-blue-500 to-pink-500',
+      features: [
+        'Poze printate si digitale nelimitate',
+        'Asistent foto',
+        'Integrare trimitere poze pe email',
+        'Galerie online cu parola 1 luna',
+        'Tip poza: Un singur model (Collage sau Strips)',
+        'Design poza personalizat',
+        'Fundal poza: Textil',
+        'Accesorii fizice: 15 buc'
+      ]
+    },
+    {
       name: 'Basic',
       duration: '4 ore',
-      price: '700',
+      price: '1000',
       icon: Package,
       popular: false,
       gradient: 'from-blue-500 to-cyan-500',
@@ -117,7 +135,7 @@ export default function Photobooth() {
     {
       name: 'Standard',
       duration: '6 ore',
-      price: '850',
+      price: '1250',
       icon: Award,
       popular: true,
       gradient: 'from-purple-500 to-pink-500',
@@ -138,7 +156,7 @@ export default function Photobooth() {
     {
       name: 'Premium',
       duration: '8 ore',
-      price: '1000',
+      price: '1500',
       icon: Crown,
       popular: false,
       gradient: 'from-yellow-400 to-orange-500',
@@ -373,7 +391,7 @@ export default function Photobooth() {
           </div>
 
           {/* Mobile Carousel - visible only on mobile */}
-          <div className="lg:hidden relative -mx-6">
+          <div className="xl:hidden relative -mx-6">
             <Carousel
               opts={{
                 align: "center",
@@ -444,7 +462,7 @@ export default function Photobooth() {
                         onClick={handleContactClick}
                         className={`relative block w-full py-4 rounded-xl font-bold text-center transition-all duration-300 ${tier.popular
                           ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50'
-                          : 'bg-white/10 text-white border border-white/30 hover:bg-white/20 hover:border-white/50'
+                          : 'bg-white/10 text-white border border-white/30 hover:bg-white/20 hover:border-white/50 '
                           }`}
                       >
                         Solicită ofertă
@@ -460,7 +478,7 @@ export default function Photobooth() {
           </div>
 
           {/* Desktop Grid - visible only on md and above */}
-          <div className="hidden lg:grid grid-cols-3 gap-8 max-w-7xl mx-auto">
+          <div className="hidden xl:grid grid-cols-4 gap-8 max-w-8xl mx-auto">
             {pricingTiers.map((tier, index) => (
               <motion.div
                 key={tier.name}
@@ -474,8 +492,8 @@ export default function Photobooth() {
                   stiffness: 100
                 }}
                 whileHover={{ y: -10, scale: 1.02 }}
-                className={`relative bg-white/10 backdrop-blur-md rounded-3xl border ${tier.popular ? 'border-purple-400/50 shadow-2xl shadow-purple-500/20' : 'border-white/20'
-                  } p-8 overflow-hidden group`}
+                className={`relative flex flex-col h-full bg-white/10 backdrop-blur-md rounded-3xl border ${tier.popular ? 'border-purple-400/50 shadow-2xl shadow-purple-500/20' : 'border-white/20'
+                  } p-4 2xl:p-8 overflow-hidden group`}
               >
                 {/* Popular Badge */}
                 {tier.popular && (
@@ -521,6 +539,9 @@ export default function Photobooth() {
                     </motion.li>
                   ))}
                 </ul>
+
+                {/* Invisible spacer - fills remaining height to push CTA to bottom */}
+                <div className="flex-1 min-h-0" />
 
                 {/* CTA Button */}
                 <motion.a
