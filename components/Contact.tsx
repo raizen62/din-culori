@@ -97,15 +97,17 @@ export default function Contact() {
             </p>
 
             <h2
-              className="leading-[0.88] mb-8"
+              className="mb-8"
               style={{
-                fontFamily: 'var(--font-shinier)',
-                fontSize: 'clamp(4rem, 8vw, 7rem)',
+                fontFamily: 'var(--font-display)',
+                fontWeight: 800,
+                fontSize: 'clamp(3.5rem, 5.5vw, 5rem)',
+                lineHeight: 0.9,
                 color: '#f5f0eb',
-                letterSpacing: '-0.02em',
+                letterSpacing: '-0.01em',
               }}
             >
-              Contactează-<br />mă
+              Contactează-mă
             </h2>
 
             {/* Terracotta rule */}

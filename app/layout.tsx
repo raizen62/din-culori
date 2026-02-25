@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Poppins } from "next/font/google";
+import { Poppins, Barlow_Condensed } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 import Navigation from "@/components/Navigation";
@@ -15,6 +15,13 @@ const poppins = Poppins({
 const shinier = localFont({
   src: "../public/fonts/Shinier-Regular.ttf",
   variable: "--font-shinier",
+});
+
+const barlowCondensed = Barlow_Condensed({
+  weight: ['700', '800'],
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-display",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -99,7 +106,7 @@ export default function RootLayout({
   return (
     <html lang="ro" className="scroll-smooth">
       <body
-        className={`${poppins.variable} ${shinier.variable} font-sans antialiased bg-white text-gray-900`}
+        className={`${poppins.variable} ${shinier.variable} ${barlowCondensed.variable} font-sans antialiased bg-white text-gray-900`}
       >
         <StructuredData />
         <Navigation />
