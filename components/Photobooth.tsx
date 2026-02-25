@@ -1,45 +1,45 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
-import { Camera, Gift, Monitor, Sparkles, Check, Star, Package, Award, Crown, TrendingUp, Cake } from 'lucide-react';
-import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
-import type { CarouselApi } from '@/components/ui/carousel';
-import Autoplay from 'embla-carousel-autoplay';
+import { Camera, Gift, Monitor, Sparkles, Check, Star, Package, Award, Crown, TrendingUp, Cake, X } from 'lucide-react';
+import { useRef, useState, useEffect } from 'react';
 
-type PhotoFormat = '10x15' | 'strip';
-
-interface PhotoboothSlide {
-  id: number;
-  src: string;
-  alt: string;
-  format: PhotoFormat;
-}
-
-const PHOTOBOOTH_SLIDES: PhotoboothSlide[] = [
+const PHOTOBOOTH_SLIDES = [
   { id: 1, src: '/photobooth.jpeg', alt: 'Photobooth Premium', format: '10x15' },
-  // Add more slides here, e.g.:
   { id: 2, src: '/photobooth_strip1.png', alt: 'Photobooth Strip', format: 'strip' },
 ];
 
 export default function Photobooth() {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [isLargeScreen, setIsLargeScreen] = useState(false);
-  const currentFormat = PHOTOBOOTH_SLIDES[currentSlide]?.format ?? '10x15';
+  const sectionRef = useRef<HTMLElement>(null);
+  const [lightboxImage, setLightboxImage] = useState<{ src: string; alt: string } | null>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"]
+  });
 
+  const y1 = useTransform(scrollYProgress, [0, 1], [100, -100]);
+  const y2 = useTransform(scrollYProgress, [0, 1], [-100, 100]);
+  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
+
+  // Close lightbox on Escape key and prevent body scroll
   useEffect(() => {
-    const check = () => setIsLargeScreen(window.innerWidth >= 1024);
-    check();
-    window.addEventListener('resize', check);
-    return () => window.removeEventListener('resize', check);
-  }, []);
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && lightboxImage) {
+        setLightboxImage(null);
+      }
+    };
 
-  const handleCarouselApi = (api: CarouselApi) => {
-    if (!api) return;
-    setCurrentSlide(api.selectedScrollSnap());
-    api.on('select', () => setCurrentSlide(api.selectedScrollSnap()));
-  };
+    if (lightboxImage) {
+      document.body.style.overflow = 'hidden';
+      window.addEventListener('keydown', handleEscape);
+    }
+
+    return () => {
+      document.body.style.overflow = 'unset';
+      window.removeEventListener('keydown', handleEscape);
+    };
+  }, [lightboxImage]);
 
   const handleContactClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
@@ -57,12 +57,11 @@ export default function Photobooth() {
   const renderFeature = (feature: string) => {
     const hasUpgrade = feature.includes('(upgraded)');
     const cleanText = feature.replace(' (upgraded)', '');
-
     return (
       <>
         {cleanText}
         {hasUpgrade && (
-          <TrendingUp className="inline-block w-3.5 h-3.5 ml-1.5 text-yellow-400 -mt-0.5" />
+          <TrendingUp className="inline-block w-3.5 h-3.5 ml-1.5 text-amber-400 -mt-0.5" />
         )}
       </>
     );
@@ -73,25 +72,21 @@ export default function Photobooth() {
       icon: Camera,
       title: 'Poze nelimitate',
       description: 'Fotografiază-te cât vrei, fără limite',
-      gradient: 'from-purple-500 to-pink-500'
     },
     {
       icon: Gift,
       title: 'Magneti și plicuri',
       description: 'Fiecare fotografie vine cu magnet și plic personalizat',
-      gradient: 'from-blue-500 to-cyan-500'
     },
     {
       icon: Monitor,
       title: 'Ecran de prezentare',
       description: 'Vezi în timp real fotografiile tale pe ecran mare',
-      gradient: 'from-orange-500 to-yellow-500'
     },
     {
       icon: Sparkles,
       title: 'Fundal premium',
       description: 'Fundal profesional pentru cele mai frumoase fotografii',
-      gradient: 'from-green-500 to-emerald-500'
     }
   ];
 
@@ -102,7 +97,6 @@ export default function Photobooth() {
       price: '800',
       icon: Cake,
       popular: false,
-      gradient: 'from-blue-500 to-pink-500',
       features: [
         'Poze printate si digitale nelimitate',
         'Asistent foto',
@@ -120,7 +114,6 @@ export default function Photobooth() {
       price: '1000',
       icon: Package,
       popular: false,
-      gradient: 'from-blue-500 to-cyan-500',
       features: [
         'Poze printate si digitale nelimitate',
         'Asistent foto',
@@ -138,7 +131,6 @@ export default function Photobooth() {
       price: '1250',
       icon: Award,
       popular: true,
-      gradient: 'from-purple-500 to-pink-500',
       features: [
         'Toate din Basic',
         'Galerie online cu parola 2 luni (upgraded)',
@@ -159,7 +151,6 @@ export default function Photobooth() {
       price: '1500',
       icon: Crown,
       popular: false,
-      gradient: 'from-yellow-400 to-orange-500',
       features: [
         'Toate din Standard',
         'Galerie online cu parola 3 luni (upgraded)',
@@ -177,393 +168,354 @@ export default function Photobooth() {
   ];
 
   return (
-    <section id="photobooth" className="relative py-32 overflow-hidden">
-      {/* Animated Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-foreground via-purple-900 to-foreground">
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjAzIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-40" />
+    <section
+      ref={sectionRef}
+      id="photobooth"
+      className="relative py-24 md:py-32 overflow-hidden bg-gradient-to-br from-indigo-950 via-purple-950 to-violet-950"
+      style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}
+    >
+      {/* Sophisticated Background Pattern */}
+      <div className="absolute inset-0 opacity-30">
+        <div className="absolute inset-0" style={{
+          backgroundImage: `radial-gradient(circle at 2px 2px, rgba(255,255,255,0.15) 1px, transparent 0)`,
+          backgroundSize: '40px 40px'
+        }} />
       </div>
 
-      {/* Floating Elements */}
+      {/* Elegant Gradient Orbs */}
       <motion.div
-        animate={{
-          y: [0, -20, 0],
-          rotate: [0, 5, 0]
-        }}
-        transition={{
-          duration: 6,
-          repeat: Infinity,
-          ease: "easeInOut"
-        }}
-        className="absolute top-20 left-10 w-20 h-20 bg-purple-500/10 rounded-full blur-xl"
+        style={{ y: y1 }}
+        className="absolute -top-40 -left-40 w-96 h-96 bg-purple-600/20 rounded-full blur-3xl"
       />
       <motion.div
-        animate={{
-          y: [0, 20, 0],
-          rotate: [0, -5, 0]
-        }}
-        transition={{
-          duration: 8,
-          repeat: Infinity,
-          ease: "easeInOut"
-        }}
-        className="absolute bottom-20 right-10 w-32 h-32 bg-pink-500/10 rounded-full blur-xl"
+        style={{ y: y2 }}
+        className="absolute -bottom-40 -right-40 w-96 h-96 bg-amber-600/20 rounded-full blur-3xl"
       />
 
-      <div className="container mx-auto px-6 lg:px-12 relative z-10">
-        {/* Section Header */}
+      <div className="container mx-auto px-6 lg:px-12 xl:px-16 relative z-10">
+        {/* Refined Header */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          className="text-center mb-20"
         >
-          <motion.div
-            initial={{ scale: 0.9 }}
-            whileInView={{ scale: 1 }}
-            viewport={{ once: true }}
-            className="inline-block"
+          <div className="inline-flex items-center gap-2 px-5 py-2 bg-amber-400/10 border border-amber-400/30 rounded-full mb-8">
+            <Sparkles className="w-4 h-4 text-amber-400" />
+            <span className="text-amber-200 font-medium text-sm tracking-wide uppercase">Premium Experience</span>
+          </div>
+
+          <h2
+            className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-light text-white mb-6 tracking-tight"
+            style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
           >
-            <div className="inline-flex items-center gap-2 px-6 py-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-full mb-6">
-              <Sparkles className="w-5 h-5 text-yellow-400" />
-              <span className="text-white font-medium">Premium Experience</span>
-            </div>
-          </motion.div>
-          <h2 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6">
             Photobooth
-            <span className="block bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">
+            <span className="block font-normal bg-gradient-to-r from-amber-200 via-amber-100 to-amber-200 bg-clip-text text-transparent mt-2">
               Premium
             </span>
           </h2>
-          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+          <p className="text-lg md:text-xl text-purple-200 max-w-2xl mx-auto leading-relaxed">
             Oferim servicii complete de photobooth pentru evenimentul tău,
             cu echipament profesional și rezultate de calitate superioară
           </p>
         </motion.div>
 
-        <div
-          className="grid gap-16 items-center"
-          style={{
-            gridTemplateColumns: isLargeScreen
-              ? (currentFormat === 'strip' ? '1fr 8fr' : '1fr 1fr')
-              : '1fr',
-            transition: 'grid-template-columns 0.4s ease-in-out',
-          }}
+        {/* Dual Format Showcase - Side by Side */}
+        <motion.div
+          initial={{ opacity: 0, y: 60 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+          className="mb-32"
         >
-          {/* Image Side */}
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="relative"
-          >
-            {/* Photo Carousel */}
-            <div>
-              <div
-                className={`relative ${!isLargeScreen && currentFormat === 'strip'
-                  ? 'w-[45%] mx-auto'
-                  : 'w-full'
-                  }`}
+          <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center max-w-7xl mx-auto">
+            {/* Strip Format - Left Side */}
+            <div className="lg:col-span-3 flex justify-center lg:justify-end">
+              <motion.div
+                initial={{ opacity: 0, x: -40 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+                className="relative group cursor-pointer"
+                onClick={() => setLightboxImage({ src: '/photobooth_strip1.png', alt: '2×6 Strip Format' })}
               >
-                <div
-                  className="relative rounded-3xl overflow-hidden shadow-2xl ring-4 ring-white/10 w-full"
-                  style={{
-                    aspectRatio: currentFormat === 'strip' ? '2/6' : '15/10',
-                    transition: 'aspect-ratio 0.4s ease-in-out',
-                  }}
-                >
-                  <div className="absolute inset-0">
-                    <Carousel
-                      setApi={handleCarouselApi}
-                      plugins={[Autoplay({ delay: 4000, stopOnInteraction: true })]}
-                      opts={{ loop: true, align: 'center' }}
-                      className="w-full h-full [&>[data-slot='carousel-content']]:h-full"
-                    >
-                      <CarouselContent className="m-0 h-full">
-                        {PHOTOBOOTH_SLIDES.map((slide) => (
-                          <CarouselItem key={slide.id} className="p-0 basis-full h-full">
-                            <div className="relative w-full h-full">
-                              <Image
-                                src={slide.src}
-                                alt={slide.alt}
-                                fill
-                                className="object-cover"
-                              />
-                              {/* Gradient overlay */}
-                              <div className="absolute inset-0 bg-gradient-to-t from-purple-900/40 via-transparent to-transparent pointer-events-none" />
-                              {/* Format badge */}
-                              <div className="absolute bottom-3 left-3 bg-black/50 backdrop-blur-sm text-white/80 text-xs font-medium px-2.5 py-1 rounded-full">
-                                {slide.format === 'strip' ? '2×6 Strip' : '10×15'}
-                              </div>
-                            </div>
-                          </CarouselItem>
-                        ))}
-                      </CarouselContent>
-                    </Carousel>
+                <div className="absolute -inset-4 bg-gradient-to-br from-amber-400/20 to-purple-600/20 rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-500" />
+                <div className="relative w-32 md:w-40 lg:w-44 group-hover:scale-105 transition-transform duration-300">
+                  <div className="relative rounded-2xl overflow-hidden shadow-2xl border-4 border-white/10" style={{ aspectRatio: '2/6' }}>
+                    <Image
+                      src="/photobooth_strip1.png"
+                      alt="2×6 Strip Format"
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                  <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-purple-600 to-purple-700 text-white px-4 py-1.5 rounded-full text-xs font-semibold shadow-lg whitespace-nowrap">
+                    2×6 Strip
                   </div>
                 </div>
-
-                {/* Floating Badge */}
-                <motion.div
-                  initial={{ scale: 0, rotate: -180 }}
-                  whileInView={{ scale: 1, rotate: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: 0.4 }}
-                  className={`absolute -right-4 bg-gradient-to-br from-yellow-400 to-orange-500 text-gray-900 rounded-xl shadow-2xl font-bold text-sm transform rotate-6 whitespace-nowrap ${currentFormat === 'strip'
-                    ? '-top-10 px-4 py-2 md:-top-8 md:-right-4 md:px-5 md:py-2 md:text-sm'
-                    : '-top-4 px-4 py-2 md:-top-6 md:-right-6 md:px-8 md:py-4 md:text-lg md:rounded-2xl'
-                    }`}
-                >
-                  ✨ Premium
-                </motion.div>
-              </div>
-
-              {/* Dot indicators */}
-              {PHOTOBOOTH_SLIDES.length > 1 && (
-                <div className="flex justify-center gap-2 mt-3">
-                  {PHOTOBOOTH_SLIDES.map((_, i) => (
-                    <div
-                      key={i}
-                      className={`rounded-full transition-all duration-300 ${i === currentSlide ? 'w-6 h-2 bg-white' : 'w-2 h-2 bg-white/40'
-                        }`}
-                    />
-                  ))}
-                </div>
-              )}
+              </motion.div>
             </div>
-          </motion.div>
 
-          {/* Features Grid */}
-          <div className="grid sm:grid-cols-2 gap-6">
+            {/* Center Content */}
+            <div className="lg:col-span-6 text-center px-4">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: 0.3 }}
+              >
+                <div className="inline-block relative">
+                  <div
+                    className="text-6xl md:text-7xl lg:text-8xl font-light text-transparent bg-clip-text bg-gradient-to-br from-amber-200 via-amber-100 to-white mb-6"
+                    style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+                  >
+                    Două Formate
+                  </div>
+                  <div className="h-1 w-24 bg-gradient-to-r from-transparent via-amber-400 to-transparent mx-auto mb-8" />
+                </div>
+                <p className="text-purple-200 text-lg max-w-md mx-auto leading-relaxed">
+                  Oferim flexibilitatea de a alege între format clasic 10×15 sau modernul strip 2×6,
+                  perfect pentru orice stil de eveniment
+                </p>
+              </motion.div>
+            </div>
+
+            {/* 10×15 Format - Right Side */}
+            <div className="lg:col-span-3 flex justify-center lg:justify-start">
+              <motion.div
+                initial={{ opacity: 0, x: 40 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: 0.4 }}
+                className="relative group cursor-pointer"
+                onClick={() => setLightboxImage({ src: '/photobooth.jpeg', alt: '10×15 Photo Format' })}
+              >
+                <div className="absolute -inset-4 bg-gradient-to-br from-purple-600/20 to-amber-400/20 rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-500" />
+                <div className="relative w-56 md:w-64 lg:w-72">
+                  <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-white/10 group-hover:scale-105 transition-transform duration-300">
+                    <div style={{ aspectRatio: '15/10' }}>
+                      <Image
+                        src="/photobooth.jpeg"
+                        alt="10×15 Photo Format"
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                  </div>
+                  <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-amber-500 to-amber-600 text-gray-900 px-4 py-1.5 rounded-full text-xs font-semibold shadow-lg whitespace-nowrap">
+                    10×15 Photo
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Premium Features */}
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="mb-32"
+        >
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 max-w-7xl mx-auto">
             {features.map((feature, index) => (
               <motion.div
                 key={feature.title}
-                initial={{ opacity: 0, y: 30, scale: 0.9 }}
-                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{
-                  duration: 0.5,
-                  delay: index * 0.1,
-                  type: "spring",
-                  stiffness: 100
-                }}
-                whileHover={{ y: -8, scale: 1.02 }}
-                className="group relative bg-white/10 backdrop-blur-md p-8 rounded-2xl border border-white/20 hover:border-white/40 transition-all duration-300 overflow-hidden"
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                className="group relative"
               >
-                {/* Gradient Background on Hover */}
-                <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-300`} />
-
-                {/* Icon with Gradient Background */}
-                <div className={`relative inline-flex p-4 rounded-xl bg-gradient-to-br ${feature.gradient} mb-4 shadow-lg`}>
-                  <feature.icon className="w-8 h-8 text-white" />
+                <div className="absolute -inset-0.5 bg-gradient-to-br from-purple-500/50 to-amber-500/50 rounded-2xl opacity-0 group-hover:opacity-100 blur transition-opacity duration-500" />
+                <div className="relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 h-full hover:bg-white/10 transition-all duration-300">
+                  <div className="inline-flex p-3 rounded-xl bg-gradient-to-br from-amber-400/20 to-purple-600/20 mb-6">
+                    <feature.icon className="w-7 h-7 text-amber-300" />
+                  </div>
+                  <h3
+                    className="text-2xl font-light text-white mb-3"
+                    style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+                  >
+                    {feature.title}
+                  </h3>
+                  <p className="text-purple-200 text-sm leading-relaxed">
+                    {feature.description}
+                  </p>
                 </div>
-
-                <h3 className="text-xl font-bold text-white mb-2 relative">
-                  {feature.title}
-                </h3>
-                <p className="text-gray-300 text-sm leading-relaxed relative">
-                  {feature.description}
-                </p>
-
-                {/* Corner Accent */}
-                <div className={`absolute top-0 right-0 w-20 h-20 bg-gradient-to-br ${feature.gradient} opacity-10 blur-2xl group-hover:opacity-20 transition-opacity`} />
               </motion.div>
             ))}
           </div>
-        </div>
+        </motion.div>
 
         {/* Pricing Section */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="mt-32"
+          transition={{ duration: 0.8 }}
         >
           <div className="text-center mb-16">
-            <h3 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              Alege pachetul potrivit
+            <h3
+              className="text-5xl md:text-6xl lg:text-7xl font-light text-white mb-6"
+              style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+            >
+              Pachete
             </h3>
-            <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+            <div className="h-1 w-24 bg-gradient-to-r from-transparent via-amber-400 to-transparent mx-auto mb-8" />
+            <p className="text-xl text-purple-200 max-w-2xl mx-auto">
               Pachete flexibile adaptate nevoilor tale
             </p>
           </div>
 
-          {/* Mobile Carousel - visible only on mobile */}
-          <div className="xl:hidden relative -mx-6">
-            <Carousel
-              opts={{
-                align: "center",
-                loop: true,
-                startIndex: 1,
-              }}
-              className="w-full"
-            >
-              <CarouselContent className="-ml-2 md:-ml-4">
-                {pricingTiers.map((tier, index) => (
-                  <CarouselItem key={tier.name} className="pl-2 md:pl-4 basis-[85%]">
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      whileInView={{ opacity: 1, scale: 1 }}
-                      viewport={{ once: true }}
-                      transition={{
-                        duration: 0.6,
-                        type: "spring",
-                        stiffness: 100
-                      }}
-                      className={`relative bg-white/10 backdrop-blur-md rounded-3xl border ${tier.popular ? 'border-purple-400/50 shadow-2xl shadow-purple-500/20' : 'border-white/20'
-                        } p-8 overflow-hidden group`}
-                    >
-                      {/* Popular Badge */}
-                      {tier.popular && (
-                        <div className="absolute top-0 right-0 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-2 rounded-bl-2xl rounded-tr-3xl font-bold text-sm flex items-center gap-1">
-                          <Star className="w-4 h-4 fill-current" />
-                          Populara
-                        </div>
-                      )}
-
-                      {/* Gradient Accent */}
-                      <div className={`absolute inset-0 bg-gradient-to-br ${tier.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-300`} />
-
-                      {/* Header */}
-                      <div className="relative mb-8">
-                        <div className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br ${tier.gradient} mb-4`}>
-                          <tier.icon className="w-8 h-8 text-white" />
-                        </div>
-                        <h4 className="text-3xl font-bold text-white mb-2">{tier.name}</h4>
-                        <div className="flex items-baseline gap-2 mb-1">
-                          <span className="text-5xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-                            {tier.price}
-                          </span>
-                          <span className="text-2xl text-gray-400 font-medium">lei</span>
-                        </div>
-                        <p className="text-gray-400 text-sm">{tier.duration}</p>
-                      </div>
-
-                      {/* Features List */}
-                      <ul className="space-y-4 relative mb-8">
-                        {tier.features.map((feature, featureIndex) => (
-                          <li
-                            key={featureIndex}
-                            className="flex items-start gap-3"
-                          >
-                            <div className={`flex-shrink-0 w-5 h-5 rounded-full bg-gradient-to-br ${tier.gradient} flex items-center justify-center mt-0.5`}>
-                              <Check className="w-3 h-3 text-white" />
-                            </div>
-                            <span className="text-gray-200 text-sm leading-relaxed">{renderFeature(feature)}</span>
-                          </li>
-                        ))}
-                      </ul>
-
-                      {/* CTA Button */}
-                      <a
-                        href="#contact"
-                        onClick={handleContactClick}
-                        className={`relative block w-full py-4 rounded-xl font-bold text-center transition-all duration-300 ${tier.popular
-                          ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50'
-                          : 'bg-white/10 text-white border border-white/30 hover:bg-white/20 hover:border-white/50 '
-                          }`}
-                      >
-                        Solicită ofertă
-                      </a>
-
-                      {/* Decorative Element */}
-                      <div className={`absolute -bottom-10 -right-10 w-40 h-40 bg-gradient-to-br ${tier.gradient} opacity-10 blur-3xl group-hover:opacity-20 transition-opacity`} />
-                    </motion.div>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-            </Carousel>
-          </div>
-
-          {/* Desktop Grid - visible only on md and above */}
-          <div className="hidden xl:grid grid-cols-4 gap-8 max-w-8xl mx-auto">
+          {/* Pricing Grid */}
+          <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-6 lg:gap-8 max-w-7xl mx-auto">
             {pricingTiers.map((tier, index) => (
               <motion.div
                 key={tier.name}
-                initial={{ opacity: 0, y: 50, scale: 0.9 }}
-                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{
-                  duration: 0.6,
-                  delay: index * 0.15,
-                  type: "spring",
-                  stiffness: 100
+                  duration: 0.8,
+                  delay: index * 0.1,
+                  ease: [0.16, 1, 0.3, 1]
                 }}
-                whileHover={{ y: -10, scale: 1.02 }}
-                className={`relative flex flex-col h-full bg-white/10 backdrop-blur-md rounded-3xl border ${tier.popular ? 'border-purple-400/50 shadow-2xl shadow-purple-500/20' : 'border-white/20'
-                  } p-4 2xl:p-8 overflow-hidden group`}
+                className={`relative group ${tier.popular ? 'md:scale-105' : ''}`}
               >
-                {/* Popular Badge */}
+                {/* Glow Effect for Popular */}
                 {tier.popular && (
-                  <div className="absolute top-0 right-0 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-2 rounded-bl-2xl rounded-tr-3xl font-bold text-sm flex items-center gap-1">
-                    <Star className="w-4 h-4 fill-current" />
-                    Populara
-                  </div>
+                  <div className="absolute -inset-1 bg-gradient-to-br from-amber-500 via-purple-500 to-pink-500 rounded-3xl opacity-40 blur-xl group-hover:opacity-60 transition-opacity duration-500" />
                 )}
 
-                {/* Gradient Accent */}
-                <div className={`absolute inset-0 bg-gradient-to-br ${tier.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-300`} />
+                <div className={`relative h-full flex flex-col bg-white/5 backdrop-blur-md border ${tier.popular ? 'border-amber-400/50' : 'border-white/10'
+                  } rounded-3xl p-8 hover:bg-white/10 transition-all duration-300`}>
 
-                {/* Header */}
-                <div className="relative mb-8">
-                  <div className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br ${tier.gradient} mb-4`}>
-                    <tier.icon className="w-8 h-8 text-white" />
+                  {/* Popular Badge */}
+                  {tier.popular && (
+                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-amber-500 to-amber-600 text-gray-900 px-6 py-2 rounded-full font-bold text-sm flex items-center gap-2 shadow-xl">
+                      <Star className="w-4 h-4 fill-current" />
+                      Populară
+                    </div>
+                  )}
+
+                  {/* Icon */}
+                  <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-400/20 to-purple-600/20 mb-6">
+                    <tier.icon className="w-7 h-7 text-amber-300" />
                   </div>
-                  <h4 className="text-3xl font-bold text-white mb-2">{tier.name}</h4>
-                  <div className="flex items-baseline gap-2 mb-1">
-                    <span className="text-5xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-                      {tier.price}
-                    </span>
-                    <span className="text-2xl text-gray-400 font-medium">lei</span>
+
+                  {/* Title */}
+                  <h4
+                    className="text-3xl font-light text-white mb-3"
+                    style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+                  >
+                    {tier.name}
+                  </h4>
+
+                  {/* Price */}
+                  <div className="mb-6">
+                    <div className="flex items-baseline gap-2">
+                      <span
+                        className="text-5xl font-normal text-transparent bg-clip-text bg-gradient-to-r from-amber-200 to-white"
+                        style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
+                      >
+                        {tier.price}
+                      </span>
+                      <span className="text-xl text-purple-300">lei</span>
+                    </div>
+                    <p className="text-purple-300 text-sm mt-1">{tier.duration}</p>
                   </div>
-                  <p className="text-gray-400 text-sm">{tier.duration}</p>
+
+                  {/* Divider */}
+                  <div className="h-px bg-gradient-to-r from-transparent via-white/20 to-transparent mb-6" />
+
+                  {/* Features */}
+                  <ul className="space-y-3 mb-8 flex-1">
+                    {tier.features.map((feature, idx) => (
+                      <li key={idx} className="flex items-start gap-3 text-sm">
+                        <div className="flex-shrink-0 w-5 h-5 rounded-full bg-gradient-to-br from-amber-400/30 to-purple-600/30 flex items-center justify-center mt-0.5">
+                          <Check className="w-3 h-3 text-amber-300" />
+                        </div>
+                        <span className="text-purple-100 leading-relaxed">
+                          {renderFeature(feature)}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  {/* CTA */}
+                  <a
+                    href="#contact"
+                    onClick={handleContactClick}
+                    className={`block w-full py-4 rounded-xl font-semibold text-center transition-all duration-300 ${tier.popular
+                        ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-gray-900 shadow-lg shadow-amber-500/30 hover:shadow-amber-500/50'
+                        : 'bg-white/10 text-white border border-white/20 hover:bg-white/20 hover:border-white/30'
+                      }`}
+                  >
+                    Solicită ofertă
+                  </a>
                 </div>
-
-                {/* Features List */}
-                <ul className="space-y-4 relative mb-8">
-                  {tier.features.map((feature, featureIndex) => (
-                    <motion.li
-                      key={featureIndex}
-                      initial={{ opacity: 0, x: -20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: index * 0.15 + featureIndex * 0.05 }}
-                      className="flex items-start gap-3"
-                    >
-                      <div className={`flex-shrink-0 w-5 h-5 rounded-full bg-gradient-to-br ${tier.gradient} flex items-center justify-center mt-0.5`}>
-                        <Check className="w-3 h-3 text-white" />
-                      </div>
-                      <span className="text-gray-200 text-sm leading-relaxed">{renderFeature(feature)}</span>
-                    </motion.li>
-                  ))}
-                </ul>
-
-                {/* Invisible spacer - fills remaining height to push CTA to bottom */}
-                <div className="flex-1 min-h-0" />
-
-                {/* CTA Button */}
-                <motion.a
-                  href="#contact"
-                  onClick={handleContactClick}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className={`relative block w-full py-4 rounded-xl font-bold text-center transition-all duration-300 ${tier.popular
-                    ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50'
-                    : 'bg-white/10 text-white border border-white/30 hover:bg-white/20 hover:border-white/50'
-                    }`}
-                >
-                  Solicită ofertă
-                </motion.a>
-
-                {/* Decorative Element */}
-                <div className={`absolute -bottom-10 -right-10 w-40 h-40 bg-gradient-to-br ${tier.gradient} opacity-10 blur-3xl group-hover:opacity-20 transition-opacity`} />
               </motion.div>
             ))}
           </div>
         </motion.div>
       </div>
+
+      {/* Lightbox Modal */}
+      <AnimatePresence>
+        {lightboxImage && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/95 backdrop-blur-sm px-4"
+            onClick={() => setLightboxImage(null)}
+          >
+            {/* Close Button */}
+            <button
+              onClick={() => setLightboxImage(null)}
+              className="absolute top-4 right-4 md:top-8 md:right-8 w-12 h-12 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center hover:bg-white/20 transition-colors z-10"
+              aria-label="Close"
+            >
+              <X className="w-6 h-6 text-white" />
+            </button>
+
+            {/* Image Container */}
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+              className="relative flex flex-col items-center"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl border-4 border-white/20 max-h-[85vh]">
+                <Image
+                  src={lightboxImage.src}
+                  alt={lightboxImage.alt}
+                  width={1200}
+                  height={800}
+                  className="object-contain max-h-[85vh] w-auto h-auto"
+                />
+              </div>
+
+              {/* Caption */}
+              <div className="mt-6 text-center">
+                <p className="text-white text-lg font-light" style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}>
+                  {lightboxImage.alt}
+                </p>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <style jsx global>{`
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&display=swap');
+      `}</style>
     </section>
   );
 }
