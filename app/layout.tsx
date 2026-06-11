@@ -1,27 +1,40 @@
 import type { Metadata } from "next";
-import { Poppins, Barlow_Condensed } from "next/font/google";
+import { Anton, Instrument_Sans, Instrument_Serif } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import StructuredData from "@/components/StructuredData";
+import SmoothScroll from "@/components/fx/SmoothScroll";
+import Preloader from "@/components/fx/Preloader";
+import CustomCursor from "@/components/fx/CustomCursor";
+import Grain from "@/components/fx/Grain";
 
-const poppins = Poppins({
-  weight: ['300', '400', '500', '600', '700'],
-  subsets: ["latin"],
-  variable: "--font-poppins",
+const anton = Anton({
+  weight: "400",
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-anton",
+  display: "swap",
+});
+
+const instrumentSans = Instrument_Sans({
+  weight: ["400", "500", "600"],
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-instrument-sans",
+  display: "swap",
+});
+
+const instrumentSerif = Instrument_Serif({
+  weight: "400",
+  style: ["normal", "italic"],
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-instrument-serif",
+  display: "swap",
 });
 
 const shinier = localFont({
   src: "../public/fonts/Shinier-Regular.ttf",
   variable: "--font-shinier",
-});
-
-const barlowCondensed = Barlow_Condensed({
-  weight: ['700', '800'],
-  subsets: ["latin", "latin-ext"],
-  variable: "--font-display",
-  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -104,11 +117,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ro" className="scroll-smooth">
+    <html lang="ro">
       <body
-        className={`${poppins.variable} ${shinier.variable} ${barlowCondensed.variable} font-sans antialiased bg-white text-gray-900`}
+        className={`${anton.variable} ${instrumentSans.variable} ${instrumentSerif.variable} ${shinier.variable} font-sans antialiased`}
       >
         <StructuredData />
+        <SmoothScroll />
+        <Preloader />
+        <CustomCursor />
+        <Grain />
         <Navigation />
         {children}
         <Footer />
