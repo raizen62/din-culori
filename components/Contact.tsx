@@ -1,7 +1,8 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { useRef } from 'react';
 import { Phone, Instagram, MessageCircle, MapPin } from 'lucide-react';
+import { useGSAP, revealWithin } from '@/lib/animations';
 
 const CONTACT_METHODS = [
   {
@@ -31,27 +32,23 @@ const CONTACT_METHODS = [
 ];
 
 export default function Contact() {
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useGSAP(
+    () => {
+      revealWithin(sectionRef.current!);
+    },
+    { scope: sectionRef }
+  );
+
   return (
     <section
       id="contact"
-      className="relative overflow-hidden"
-      style={{ background: '#0c0b09' }}
+      ref={sectionRef}
+      className="relative overflow-hidden border-t border-[var(--hairline-soft)] bg-[var(--ink-2)]"
     >
-      {/* Grain texture */}
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
-          backgroundRepeat: 'repeat',
-          backgroundSize: '256px 256px',
-          opacity: 0.04,
-          mixBlendMode: 'overlay',
-        }}
-      />
-
       {/* Decorative concentric rings */}
-      <div aria-hidden="true" className="absolute right-[-80px] top-1/2 -translate-y-1/2 pointer-events-none">
+      <div aria-hidden="true" className="pointer-events-none absolute right-[-80px] top-1/2 -translate-y-1/2">
         {[640, 480, 320, 160].map((size, i) => (
           <div
             key={size}
@@ -62,7 +59,7 @@ export default function Contact() {
               top: '50%',
               left: '50%',
               transform: 'translate(-50%, -50%)',
-              borderColor: `rgba(255,255,255,${0.025 + i * 0.01})`,
+              borderColor: `rgba(243,238,229,${0.03 + i * 0.012})`,
             }}
           />
         ))}
@@ -71,161 +68,95 @@ export default function Contact() {
       {/* Faint warm glow */}
       <div
         aria-hidden="true"
-        className="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full pointer-events-none"
+        className="pointer-events-none absolute bottom-0 left-0 h-[500px] w-[500px] rounded-full"
         style={{
-          background: 'radial-gradient(circle, rgba(212,130,95,0.06) 0%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(212,130,95,0.07) 0%, transparent 70%)',
           transform: 'translate(-30%, 30%)',
         }}
       />
 
-      <div className="container mx-auto px-6 lg:px-16 py-28 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-start">
-
+      <div className="relative z-10 mx-auto max-w-[1600px] px-6 py-28 md:px-12 md:py-40">
+        <div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-12 lg:gap-20">
           {/* Left: Heading block */}
-          <motion.div
-            className="lg:col-span-5 lg:sticky lg:top-28"
-            initial={{ opacity: 0, x: -24 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-          >
-            <p
-              className="text-xs uppercase tracking-[0.35em] mb-8 font-medium"
-              style={{ color: 'rgba(255,255,255,0.35)' }}
-            >
-              Să lucrăm împreună
-            </p>
+          <div className="lg:sticky lg:top-28 lg:col-span-5">
+            <div data-reveal className="mb-10 flex items-center gap-4">
+              <span className="spectrum-line h-px w-10" />
+              <span className="text-[10px] font-semibold uppercase tracking-[0.32em] text-[var(--cream-50)]">
+                05 — Să lucrăm împreună
+              </span>
+            </div>
 
             <h2
-              className="mb-8"
-              style={{
-                fontFamily: 'var(--font-display)',
-                fontWeight: 800,
-                fontSize: 'clamp(3.5rem, 5.5vw, 5rem)',
-                lineHeight: 0.9,
-                color: '#f5f0eb',
-                letterSpacing: '-0.01em',
-              }}
+              data-reveal
+              className="mb-8 font-display text-[clamp(2.4rem,5.2vw,4.8rem)] uppercase leading-[0.9] text-[var(--cream)]"
             >
               Contactează-mă
+              <span className="text-spectrum block font-serif text-[0.4em] lowercase italic leading-[1.2] tracking-normal">
+                hai să vorbim
+              </span>
             </h2>
 
-            {/* Terracotta rule */}
-            <motion.div
-              className="h-px w-14 mb-8"
-              style={{ background: '#d4825f' }}
-              initial={{ scaleX: 0, originX: 0 }}
-              whileInView={{ scaleX: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.4, duration: 0.6 }}
-            />
-
-            <p
-              className="text-lg leading-relaxed max-w-sm"
-              style={{ color: 'rgba(245,240,235,0.45)' }}
-            >
-              Ai un proiect în minte? Contactează-mă prin telefon, WhatsApp sau
-              Instagram și hai să discutăm!
+            <p data-reveal className="max-w-sm text-base leading-relaxed text-[var(--cream-50)]">
+              Ai un proiect în minte? Contactează-mă prin telefon, WhatsApp sau Instagram și hai să
+              discutăm!
             </p>
 
-            <div
-              className="mt-12 flex items-center gap-2.5"
-              style={{ color: 'rgba(255,255,255,0.28)' }}
-            >
+            <div data-reveal className="mt-12 flex items-center gap-2.5 text-[var(--cream-30)]">
               <MapPin size={13} strokeWidth={1.5} />
               <span className="text-sm tracking-wide">București, România</span>
             </div>
-          </motion.div>
+          </div>
 
           {/* Right: Contact rows */}
-          <div className="lg:col-span-7 flex flex-col">
+          <div className="flex flex-col lg:col-span-7">
             {CONTACT_METHODS.map((method, index) => {
               const Icon = method.icon;
               return (
-                <motion.a
+                <a
                   key={method.title}
                   href={method.href}
                   target={method.href.startsWith('http') ? '_blank' : undefined}
                   rel={method.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                  initial={{ opacity: 0, y: 22 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{
-                    delay: 0.2 + index * 0.13,
-                    duration: 0.75,
-                    ease: [0.16, 1, 0.3, 1],
-                  }}
-                  className="group relative flex items-center justify-between gap-6 py-8 px-6 transition-colors duration-300"
-                  style={{
-                    borderTop: index === 0 ? '1px solid rgba(255,255,255,0.08)' : undefined,
-                    borderBottom: '1px solid rgba(255,255,255,0.08)',
-                  }}
+                  data-reveal
+                  data-reveal-delay={String(index * 0.1)}
+                  className="group relative flex items-center justify-between gap-6 border-b border-[var(--hairline-soft)] px-4 py-8 transition-colors duration-300 first:border-t md:px-6"
                 >
-                  {/* Left accent bar — slides in on hover */}
-                  <motion.div
-                    className="absolute left-0 top-0 bottom-0 w-[2px] origin-top"
-                    style={{ background: method.accent }}
-                    initial={{ scaleY: 0 }}
-                    whileHover={{ scaleY: 1 }}
-                    transition={{ duration: 0.28, ease: 'easeOut' }}
-                  />
-
-                  {/* Subtle hover background */}
+                  {/* Accent bar slides in on hover */}
                   <div
-                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
-                    style={{
-                      background: `linear-gradient(90deg, ${method.accent}08 0%, transparent 60%)`,
-                    }}
+                    className="absolute bottom-0 left-0 top-0 w-[2px] origin-top scale-y-0 transition-transform duration-300 ease-out group-hover:scale-y-100"
+                    style={{ background: method.accent }}
+                  />
+                  {/* Subtle hover wash */}
+                  <div
+                    className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                    style={{ background: `linear-gradient(90deg, ${method.accent}0a 0%, transparent 60%)` }}
                   />
 
-                  {/* Icon + text */}
                   <div className="relative flex items-center gap-5">
                     <div
-                      className="w-12 h-12 rounded-full flex-shrink-0 flex items-center justify-center transition-transform duration-300 group-hover:scale-110"
-                      style={{
-                        background: `${method.accent}18`,
-                        color: method.accent,
-                      }}
+                      className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full transition-transform duration-300 group-hover:scale-110"
+                      style={{ background: `${method.accent}1a`, color: method.accent }}
                     >
                       <Icon size={20} strokeWidth={1.6} />
                     </div>
-
                     <div>
-                      <p
-                        className="text-[11px] uppercase tracking-[0.25em] mb-1 font-medium"
-                        style={{ color: 'rgba(255,255,255,0.35)' }}
-                      >
+                      <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.25em] text-[var(--cream-30)]">
                         {method.title}
                       </p>
-                      <p
-                        className="text-xl font-medium leading-tight mb-0.5"
-                        style={{ color: '#f5f0eb' }}
-                      >
+                      <p className="mb-0.5 text-xl font-medium leading-tight text-[var(--cream)]">
                         {method.value}
                       </p>
-                      <p
-                        className="text-sm"
-                        style={{ color: 'rgba(245,240,235,0.35)' }}
-                      >
-                        {method.description}
-                      </p>
+                      <p className="font-serif italic text-sm text-[var(--cream-50)]">{method.description}</p>
                     </div>
                   </div>
 
-                  {/* Arrow */}
-                  <div
-                    className="relative flex-shrink-0 w-10 h-10 rounded-full border flex items-center justify-center transition-all duration-300"
-                    style={{
-                      borderColor: 'rgba(255,255,255,0.12)',
-                      color: 'rgba(255,255,255,0.3)',
-                    }}
-                  >
-                    <motion.svg
+                  <div className="relative flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border border-[var(--hairline)] text-[var(--cream-30)] transition-colors duration-300 group-hover:border-[var(--cream-50)] group-hover:text-[var(--cream)]">
+                    <svg
                       width="14"
                       height="14"
                       viewBox="0 0 14 14"
                       fill="none"
-                      className="transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                      className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
                     >
                       <path
                         d="M2 7h10M7 2l5 5-5 5"
@@ -234,25 +165,16 @@ export default function Contact() {
                         strokeLinecap="round"
                         strokeLinejoin="round"
                       />
-                    </motion.svg>
+                    </svg>
                   </div>
-                </motion.a>
+                </a>
               );
             })}
 
-            {/* Bottom tagline */}
-            <motion.p
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.6, duration: 0.8 }}
-              className="mt-10 text-sm"
-              style={{ color: 'rgba(255,255,255,0.22)', letterSpacing: '0.05em' }}
-            >
+            <p data-reveal className="mt-10 font-serif italic text-sm tracking-wide text-[var(--cream-30)]">
               Răspund de obicei în aceeași zi.
-            </motion.p>
+            </p>
           </div>
-
         </div>
       </div>
     </section>
