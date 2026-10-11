@@ -33,7 +33,7 @@ When building for production, run `npm run build` - this creates the `/out` fold
 
 Single-page layout composed in `app/page.tsx`:
 - `app/layout.tsx` - Root layout: fonts, `StructuredData`, experience layer (`SmoothScroll`, `Preloader`, `CustomCursor`, `Grain`), `Navigation`, `Footer`
-- Section order on the page: `Hero` → `Marquee` → `Manifesto` → `Photobooth` → `Gallery` → `About` → `Contact`
+- Section order on the page: `Hero` → `Marquee` → `Manifesto` → `Photobooth` → `Corporate` → `Gallery` → `About` → `Contact`
 - All interactive components are client components (`'use client'`)
 
 ### Animation System (GSAP + Lenis)
@@ -60,7 +60,7 @@ Single-page layout composed in `app/page.tsx`:
 
 ### Component Patterns
 
-**1. Section anatomy** — every section follows: section label row (spectrum dash + numbered `0X — Label` uppercase micro-type), huge Anton heading (often with a serif-italic spectrum subline), content, all revealed via `data-reveal` + `revealWithin(sectionRef)` in a `useGSAP` hook. Section IDs for anchors: `photobooth`, `gallery`, `about`, `contact`.
+**1. Section anatomy** — every section follows: section label row (spectrum dash + numbered `0X — Label` uppercase micro-type), huge Anton heading (often with a serif-italic spectrum subline), content, all revealed via `data-reveal` + `revealWithin(sectionRef)` in a `useGSAP` hook. Section IDs for anchors: `photobooth`, `corporate`, `gallery`, `about`, `contact`.
 
 **2. Image handling**
 - Hero slideshow and section images use Next.js `Image`; Gallery uses `<img>` (lightbox compatibility — the lint warning is accepted)
@@ -84,6 +84,8 @@ Categories must exist in the `CATEGORIES` array (key + Romanian label) in the sa
 **Hero Slides** - `components/Hero.tsx`, `HERO_SLIDES` array: `{ id, src, alt }`.
 
 **Photobooth pricing/features** - `components/Photobooth.tsx`: `PRICING_TIERS` (name, duration, price, icon, popular, features; `(upgraded)` suffix renders a trend icon) and `FEATURES`.
+
+**Corporate** - `components/Corporate.tsx`: `EVENT_TYPES`, `DELIVERABLES`, `PROCESS`, `QUOTE_CHECKLIST`. No fixed prices — the quote CTA opens WhatsApp with a pre-filled Romanian message (`WHATSAPP_MESSAGE`) plus a tel: link.
 
 **Contact Information** - `components/Contact.tsx` (`CONTACT_METHODS`) and `components/Footer.tsx` (`SOCIALS` + phone).
 

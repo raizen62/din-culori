@@ -9,6 +9,7 @@ import { REVEAL_EVENT } from '@/components/fx/Preloader';
 
 const NAV_LINKS = [
   { name: 'Photobooth', id: 'photobooth' },
+  { name: 'Corporate', id: 'corporate' },
   { name: 'Galerie', id: 'gallery' },
   { name: 'Despre mine', id: 'about' },
   { name: 'Contact', id: 'contact' },

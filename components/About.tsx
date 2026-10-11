@@ -50,7 +50,7 @@ export default function About() {
         <div data-reveal className="mb-14 flex items-center gap-4 md:mb-20">
           <span className="spectrum-line h-px w-10" />
           <span className="text-[10px] font-semibold uppercase tracking-[0.32em] text-[var(--cream-50)]">
-            04 — Despre mine
+            05 — Despre mine
           </span>
         </div>
 

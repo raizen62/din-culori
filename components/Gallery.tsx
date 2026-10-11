@@ -118,7 +118,7 @@ export default function Gallery() {
         <div data-reveal className="mb-10 flex items-center gap-4">
           <span className="spectrum-line h-px w-10" />
           <span className="text-[10px] font-semibold uppercase tracking-[0.32em] text-[var(--cream-50)]">
-            03 — Portofoliu
+            04 — Portofoliu
           </span>
         </div>
 

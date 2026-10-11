@@ -7,6 +7,7 @@ import { scrollToId, getLenis } from '@/lib/scroll';
 
 const FOOTER_LINKS = [
   { name: 'Photobooth', id: 'photobooth' },
+  { name: 'Corporate', id: 'corporate' },
   { name: 'Galerie', id: 'gallery' },
   { name: 'Despre mine', id: 'about' },
   { name: 'Contact', id: 'contact' },
