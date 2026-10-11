@@ -85,7 +85,7 @@ Categories must exist in the `CATEGORIES` array (key + Romanian label) in the sa
 
 **Photobooth pricing/features** - `components/Photobooth.tsx`: `PRICING_TIERS` (name, duration, price, icon, popular, features; `(upgraded)` suffix renders a trend icon) and `FEATURES`.
 
-**Corporate** - `components/Corporate.tsx`: `EVENT_TYPES`, `DELIVERABLES`, `PROCESS`, `QUOTE_CHECKLIST`. No fixed prices — the quote CTA opens WhatsApp with a pre-filled Romanian message (`WHATSAPP_MESSAGE`) plus a tel: link.
+**Corporate** - `components/Corporate.tsx`: `EVENT_TYPES`, `DELIVERABLES`, `PROCESS`, `QUOTE_CHECKLIST`, plus a corporate photobooth block (`PHOTOBOOTH_PERKS`, `PHOTOBOOTH_USES`, own pre-filled `PHOTOBOOTH_MESSAGE`). No fixed prices — the quote CTAs open WhatsApp with pre-filled Romanian messages plus a tel: link.
 
 **Contact Information** - `components/Contact.tsx` (`CONTACT_METHODS`) and `components/Footer.tsx` (`SOCIALS` + phone).
 

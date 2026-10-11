@@ -2,14 +2,18 @@
 
 import { useRef } from 'react';
 import Image from 'next/image';
-import { Camera, Images, Megaphone, Sparkles, MessageCircle, Phone } from 'lucide-react';
+import { Camera, Images, Megaphone, MessageCircle, Phone, ArrowUp } from 'lucide-react';
 import { gsap, ScrollTrigger, useGSAP, revealWithin } from '@/lib/animations';
-import { prefersReducedMotion } from '@/lib/scroll';
+import { prefersReducedMotion, scrollToId } from '@/lib/scroll';
 
 const WHATSAPP_MESSAGE =
-  'Bună ziua! Aș dori o ofertă pentru fotografie la un eveniment corporate.\n' +
-  'Tip eveniment:\nData:\nLocație:\nDurată estimată:\nNumăr participanți:';
+  'Bună ziua! Aș dori o ofertă pentru un eveniment corporate.\n' +
+  'Servicii dorite (fotograf / photobooth / ambele):\nTip eveniment:\nData:\nLocație:\nDurată estimată:\nNumăr participanți:';
 const WHATSAPP_HREF = `https://wa.me/40726221081?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
+const PHOTOBOOTH_MESSAGE =
+  'Bună ziua! Aș dori o ofertă pentru photobooth la un eveniment corporate.\n' +
+  'Tip eveniment:\nData:\nLocație:\nDurată estimată:\nNumăr participanți:\nLogo / culori brand: le trimit separat';
+const PHOTOBOOTH_WHATSAPP_HREF = `https://wa.me/40726221081?text=${encodeURIComponent(PHOTOBOOTH_MESSAGE)}`;
 const PHONE_HREF = 'tel:+40726221081';
 
 const EVENT_TYPES = [
@@ -24,8 +28,19 @@ const DELIVERABLES = [
   { icon: Camera, title: 'Acoperire completă', description: 'De la sosirea invitaților până la ultimul toast — momentele care contează pentru brand.' },
   { icon: Images, title: 'Galerie online privată', description: 'Fotografii editate, gata de descărcat și distribuit în toată echipa.' },
   { icon: Megaphone, title: 'Pregătite pentru PR', description: 'Selecții pentru comunicate, social media și newsletter-ul intern.' },
-  { icon: Sparkles, title: 'Photobooth branduit', description: 'Opțional: photobooth cu logo-ul și culorile companiei pe fiecare print.' },
 ];
+
+// Mirrors what the Photobooth packages already include, framed for companies.
+const PHOTOBOOTH_PERKS = [
+  'Design de poză cu logo-ul și culorile companiei',
+  'Poze printate și digitale nelimitate, pe loc',
+  'Fundal textil sau digital, adaptat brandului',
+  'Accesorii fizice și plăcuțe cu mesaje personalizate',
+  'Ecran de prezentare și Social Share Station',
+  'Galerie online cu parolă pentru toți invitații',
+];
+
+const PHOTOBOOTH_USES = ['Petreceri de Crăciun', 'Team building', 'Lansări de produs', 'Târguri & standuri'];
 
 const PROCESS = [
   { step: '01', title: 'Discutăm', description: 'Îmi spui despre eveniment: data, locația, programul și ce vrei să obții.' },
@@ -34,7 +49,7 @@ const PROCESS = [
   { step: '04', title: 'Livrare', description: 'Fotografiile editate ajung în galeria ta online, gata de folosit.' },
 ];
 
-const QUOTE_CHECKLIST = ['Tipul evenimentului', 'Data și locația', 'Durata estimată', 'Numărul de participanți'];
+const QUOTE_CHECKLIST = ['Fotograf, photobooth sau ambele', 'Tipul evenimentului', 'Data și locația', 'Durata estimată', 'Numărul de participanți'];
 
 export default function Corporate() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -106,8 +121,9 @@ export default function Corporate() {
             </span>
           </h2>
           <p data-reveal data-reveal-delay="0.1" className="max-w-md text-base leading-relaxed text-[var(--cream-50)] lg:justify-self-end lg:pb-4">
-            Fotografie de eveniment pentru companii care vor imagini cu personalitate — nu doar poze de
-            arhivă. Surprind oamenii, energia și detaliile care spun cine sunteți.
+            Fotografie de eveniment și photobooth branduit pentru companii care vor imagini cu
+            personalitate — nu doar poze de arhivă. Surprind oamenii, energia și detaliile care spun
+            cine sunteți, iar invitații pleacă acasă cu o amintire printată.
           </p>
         </div>
 
@@ -200,14 +216,131 @@ export default function Corporate() {
           </ul>
         </div>
 
+        {/* Corporate photobooth */}
+        <div className="relative mb-24 md:mb-32">
+          <div className="grid gap-14 lg:grid-cols-12 lg:items-center lg:gap-16">
+            {/* Visual: classic print + tilted strip */}
+            <div className="relative lg:col-span-6">
+              <figure data-reveal data-bloom className="bloom group relative w-[82%]">
+                <div className="overflow-hidden">
+                  <Image
+                    src="/photobooth.jpeg"
+                    alt="Photobooth corporate cu print personalizat - Din Culori București"
+                    width={1200}
+                    height={800}
+                    sizes="(min-width: 1024px) 40vw, 82vw"
+                    className="bloom-img h-auto w-full object-cover group-hover:scale-[1.04]"
+                  />
+                </div>
+              </figure>
+              <figure
+                data-reveal
+                data-reveal-delay="0.15"
+                data-bloom
+                className="bloom group absolute -bottom-10 right-0 w-[30%] max-w-[190px]"
+              >
+                <div className="rotate-3 overflow-hidden border-[5px] border-[var(--cream)] bg-[var(--cream)] shadow-[0_30px_60px_-20px_rgba(0,0,0,0.8)]">
+                  <Image
+                    src="/photobooth_strip1.png"
+                    alt="Strip photobooth personalizat pentru evenimente corporate"
+                    width={400}
+                    height={1200}
+                    sizes="190px"
+                    className="bloom-img h-auto w-full object-cover group-hover:scale-[1.04]"
+                  />
+                </div>
+              </figure>
+              <div
+                data-reveal
+                data-reveal-delay="0.25"
+                className="absolute -left-2 -top-16 flex h-20 w-20 items-center justify-center sm:-top-12 sm:h-24 sm:w-24 md:-left-3 md:-top-10 md:h-28 md:w-28"
+              >
+                <span className="flex h-full w-full -rotate-12 items-center justify-center rounded-full bg-[var(--terracotta)] text-center font-display text-[10px] sm:text-[11px] uppercase leading-tight tracking-wide text-[var(--ink)] md:text-xs">
+                  Logo-ul
+                  <br />
+                  tău aici
+                </span>
+              </div>
+            </div>
+
+            {/* Copy */}
+            <div className="lg:col-span-6">
+              <div data-reveal className="mb-6 flex items-center gap-4">
+                <span className="spectrum-line h-px w-10" />
+                <span className="text-[10px] font-semibold uppercase tracking-[0.32em] text-[var(--cream-50)]">
+                  Și photobooth
+                </span>
+              </div>
+              <h3
+                data-reveal
+                className="mb-6 font-display text-[clamp(2.6rem,6vw,5rem)] uppercase leading-[0.92] text-[var(--cream)]"
+              >
+                Photobooth corporate
+                <span className="text-spectrum block font-serif text-[0.42em] lowercase italic leading-[1.3] tracking-normal">
+                  cu identitatea brandului tău
+                </span>
+              </h3>
+              <p data-reveal className="mb-8 max-w-lg text-base leading-relaxed text-[var(--cream-50)]">
+                Cel mai rapid mod de a pune brandul în mâinile invitaților. Fiecare poză iese cu logo-ul
+                companiei — colegii o iau acasă, o pun pe birou și o distribuie online.
+              </p>
+
+              <ul className="mb-8 grid gap-x-8 gap-y-3 sm:grid-cols-2">
+                {PHOTOBOOTH_PERKS.map((perk, i) => (
+                  <li
+                    key={perk}
+                    data-reveal
+                    data-reveal-delay={String(i * 0.05)}
+                    className="flex items-start gap-2.5 border-b border-[var(--hairline-soft)] pb-3 text-sm leading-relaxed text-[var(--cream-70)]"
+                  >
+                    <span className="mt-px font-serif italic text-[var(--terracotta)]">+</span>
+                    <span>{perk}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <div data-reveal className="mb-10 flex flex-wrap gap-2">
+                {PHOTOBOOTH_USES.map((use) => (
+                  <span
+                    key={use}
+                    className="rounded-full border border-[var(--hairline)] px-4 py-1.5 font-serif text-sm italic text-[var(--cream-70)]"
+                  >
+                    {use}
+                  </span>
+                ))}
+              </div>
+
+              <div data-reveal className="flex flex-col gap-3 sm:flex-row">
+                <a
+                  href={PHOTOBOOTH_WHATSAPP_HREF}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2.5 whitespace-nowrap bg-[var(--terracotta)] px-6 py-4 text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--ink)] transition-colors duration-300 hover:bg-[var(--cream)]"
+                >
+                  <MessageCircle className="h-4 w-4" strokeWidth={1.8} />
+                  Cere ofertă photobooth
+                </a>
+                <button
+                  type="button"
+                  onClick={() => scrollToId('photobooth')}
+                  className="flex items-center justify-center gap-2.5 whitespace-nowrap border border-[var(--hairline)] px-6 py-4 text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--cream)] transition-all duration-300 hover:border-[var(--cream)] hover:bg-[var(--cream)] hover:text-[var(--ink)]"
+                >
+                  <ArrowUp className="h-4 w-4" strokeWidth={1.8} />
+                  Vezi ce include
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Deliverables */}
-        <div className="mb-24 grid border-t border-[var(--hairline-soft)] md:mb-32 md:grid-cols-2 xl:grid-cols-4">
+        <div className="mb-24 grid border-t border-[var(--hairline-soft)] md:mb-32 md:grid-cols-3">
           {DELIVERABLES.map((item, i) => (
             <div
               key={item.title}
               data-reveal
               data-reveal-delay={String(i * 0.08)}
-              className="border-b border-[var(--hairline-soft)] px-1 py-8 md:border-r md:px-7 md:py-10 md:first:pl-1 md:[&:nth-child(2n)]:border-r-0 xl:[&:nth-child(2n)]:border-r xl:last:border-r-0"
+              className="border-b border-[var(--hairline-soft)] px-1 py-8 md:border-r md:px-7 md:py-10 md:first:pl-1 md:last:border-r-0"
             >
               <div className="mb-6 flex items-center justify-between">
                 <item.icon className="h-5 w-5 text-[var(--terracotta)]" strokeWidth={1.5} />
