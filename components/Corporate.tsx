@@ -219,33 +219,16 @@ export default function Corporate() {
         {/* Corporate photobooth */}
         <div className="relative mb-24 md:mb-32">
           <div className="grid gap-14 lg:grid-cols-12 lg:items-center lg:gap-16">
-            {/* Visual: classic print + tilted strip */}
+            {/* Visual: classic branded print */}
             <div className="relative lg:col-span-6">
-              <figure data-reveal data-bloom className="bloom group relative w-[82%]">
+              <figure data-reveal data-bloom className="bloom group relative">
                 <div className="overflow-hidden">
                   <Image
                     src="/photobooth.jpeg"
                     alt="Photobooth corporate cu print personalizat - Din Culori București"
                     width={1200}
                     height={800}
-                    sizes="(min-width: 1024px) 40vw, 82vw"
-                    className="bloom-img h-auto w-full object-cover group-hover:scale-[1.04]"
-                  />
-                </div>
-              </figure>
-              <figure
-                data-reveal
-                data-reveal-delay="0.15"
-                data-bloom
-                className="bloom group absolute -bottom-10 right-0 w-[30%] max-w-[190px]"
-              >
-                <div className="rotate-3 overflow-hidden border-[5px] border-[var(--cream)] bg-[var(--cream)] shadow-[0_30px_60px_-20px_rgba(0,0,0,0.8)]">
-                  <Image
-                    src="/photobooth_strip1.png"
-                    alt="Strip photobooth personalizat pentru evenimente corporate"
-                    width={400}
-                    height={1200}
-                    sizes="190px"
+                    sizes="(min-width: 1024px) 45vw, 100vw"
                     className="bloom-img h-auto w-full object-cover group-hover:scale-[1.04]"
                   />
                 </div>
