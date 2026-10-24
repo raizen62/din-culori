@@ -55,7 +55,7 @@ Single-page layout composed in `app/page.tsx`:
 
 - Palette: `--ink` (near-black warm), `--ink-2`/`--ink-3` (panels), `--cream` (+ `--cream-70/50/30` alphas), `--terracotta` (accent), `--hairline`/`--hairline-soft` (borders), `--spectrum` (brand gradient).
 - shadcn-style tokens (`--background`, `--primary`, …) are mapped onto this dark palette.
-- Utility classes: `.text-spectrum` (animated gradient text), `.text-stroke-cream` (outline type), `.spectrum-line`, `.link-line` (gradient underline grows in from the left, fades out at full width; `data-active="true"` keeps it on), `.bloom`/`.bloom-img`/`.in-bloom` (desaturate → color), `.grain`, `.marquee-track`.
+- Utility classes: `.text-spectrum` (animated gradient text), `.text-stroke-cream` (outline type), `.spectrum-line`, `.link-line` (gradient underline revealed left→right via `clip-path` — not `scaleX`, which repaints a 1px line thinner when the transition settles — and faded out at full width; `data-active="true"` keeps it on), `.bloom`/`.bloom-img`/`.in-bloom` (desaturate → color), `.grain`, `.marquee-track`.
 - Fonts (loaded in `app/layout.tsx`): **Anton** (`--font-anton`, `font-display`, display headlines, uppercase), **Instrument Sans** (`--font-instrument-sans`, body), **Instrument Serif** italic (`--font-instrument-serif`, `font-serif`, accent words), **Shinier** (`--font-shinier`, logo + signature). All Google fonts use `latin-ext` for Romanian diacritics.
 
 ### Component Patterns
@@ -73,7 +73,7 @@ Single-page layout composed in `app/page.tsx`:
 
 **5. Activations reel** — `components/ActivationsReel.tsx`, rendered full-bleed inside `Corporate` (between the event-type index and the photobooth block). On `lg` + no reduced motion it pins and turns vertical scroll into a horizontal glide (`gsap.matchMedia`, `containerAnimation` for per-frame bloom, counter + spectrum progress; no skew or in-frame parallax — the client found it wobbly). Below `lg` or under reduced motion it is a native swipe strip (`snap-x`) with photos already in bloom. Being a child of `Corporate`, its pin is created before the sections below it, which keeps their trigger positions right.
 
-**6. Navigation** — fixed bar (blurs after 50px scroll), desktop links with numbered labels, mobile full-screen overlay menu animated per-toggle in the `isOpen` effect; scroll locking via `lenis.stop()/start()`.
+**6. Navigation** — fixed bar (blurs after 50px scroll), desktop links with numbered labels and a scroll spy (one ScrollTrigger per section, `refreshPriority: -1` so it measures after the Corporate pin) that sets `data-active` on the current section's link, mobile full-screen overlay menu animated per-toggle in the `isOpen` effect; scroll locking via `lenis.stop()/start()`.
 
 ### Data Management
 

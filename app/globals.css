@@ -237,20 +237,22 @@ html.dc-cursor [role="button"] {
   height: 1px;
   width: 100%;
   background: var(--spectrum);
-  transform: scaleX(0);
-  transform-origin: left;
+  /* Revealed with clip-path, not scaleX: a scaled 1px line is drawn on a GPU layer
+     mid-animation and repainted thinner when it settles. clip-path paints the same
+     pixels the whole time. */
+  clip-path: inset(0 100% 0 0);
   opacity: 0;
-  /* Exit: fade out at full width, then reset the scale once invisible. */
+  /* Exit: fade out at full width, then reset the clip once invisible. */
   transition:
     opacity 0.35s ease,
-    transform 0s linear 0.35s;
+    clip-path 0s linear 0.35s;
 }
 .link-line:hover::after,
 .link-line[data-active="true"]::after {
-  transform: scaleX(1);
+  clip-path: inset(0 0 0 0);
   opacity: 1;
   transition:
-    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    clip-path 0.45s cubic-bezier(0.22, 1, 0.36, 1),
     opacity 0s;
 }
 
