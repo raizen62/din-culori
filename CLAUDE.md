@@ -69,7 +69,7 @@ Single-page layout composed in `app/page.tsx`:
 
 **3. Hero slideshow** — GSAP crossfade + Ken Burns (no carousel lib). Slides in `HERO_SLIDES`, interval `SLIDE_MS`, spectrum progress bar and `0X / 06` counter, mouse parallax on fine pointers.
 
-**4. Gallery** — asymmetric 12-col editorial grid: column spans + vertical stagger come from the `LAYOUT` cycle, while each photo keeps its **true aspect ratio** (`ratio` field per image, `'4/5'` or `'2/3'`) so people are never cropped. Category filters with superscript counts (no pagination — all images of the active category render), `yet-another-react-lightbox` on click. Per-item ScrollTriggers are rebuilt inside a `gsap.context` in a `useEffect` keyed by the active category. When adding a photo, set `ratio` to match the file's orientation.
+**4. Gallery** — asymmetric 12-col editorial grid: column spans + vertical stagger come from the `LAYOUT` cycle, while each photo keeps its **true aspect ratio** (`ratio` field per image, `'4/5'`, `'2/3'` or landscape `'3/2'` — mapped via `RATIO_CLASS`; landscape items skip `LAYOUT` and sit wide and centered on their own row) so people are never cropped. Category filters with superscript counts (no pagination — all images of the active category render), `yet-another-react-lightbox` on click. Per-item ScrollTriggers are rebuilt inside a `gsap.context` in a `useEffect` keyed by the active category. When adding a photo, set `ratio` to match the file's orientation.
 
 **5. Navigation** — fixed bar (blurs after 50px scroll), desktop links with numbered labels, mobile full-screen overlay menu animated per-toggle in the `isOpen` effect; scroll locking via `lenis.stop()/start()`.
 

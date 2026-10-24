@@ -17,7 +17,15 @@ const galleryImages = [
   { id: 7, src: '/images/random_1.jpg', category: 'random', title: 'La patinoar', ratio: '2/3' },
   { id: 8, src: '/images/random_2.jpg', category: 'random', title: 'Elf', ratio: '4/5' },
   { id: 9, src: '/images/concert_1.jpg', category: 'concert', title: 'Folk Frate', ratio: '4/5' },
+  { id: 10, src: '/images/eveniment_f1.jpg', category: 'random', title: 'Showrun F1', ratio: '3/2' },
 ];
+
+// Literal class names so Tailwind picks them up.
+const RATIO_CLASS: Record<string, string> = {
+  '4/5': 'aspect-[4/5]',
+  '2/3': 'aspect-[2/3]',
+  '3/2': 'aspect-[3/2]',
+};
 
 const CATEGORIES = [
   { key: 'all', label: 'Toate' },
@@ -153,7 +161,11 @@ export default function Gallery() {
         {/* Grid */}
         <div ref={gridRef} className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-12 lg:gap-x-8 lg:gap-y-20">
           {filtered.map((image, index) => {
-            const layout = LAYOUT[index % LAYOUT.length];
+            // Landscape shots break the rhythm on purpose: wide and centered on their own row.
+            const layout =
+              image.ratio === '3/2'
+                ? { span: 'sm:col-span-2 lg:col-span-8 lg:col-start-3', offset: '' }
+                : LAYOUT[index % LAYOUT.length];
             return (
               <figure
                 key={image.id}
@@ -166,9 +178,7 @@ export default function Gallery() {
                 }}
               >
                 <div
-                  className={`relative overflow-hidden ${
-                    image.ratio === '2/3' ? 'aspect-[2/3]' : 'aspect-[4/5]'
-                  }`}
+                  className={`relative overflow-hidden ${RATIO_CLASS[image.ratio] ?? 'aspect-[4/5]'}`}
                 >
                   <img
                     src={image.src}

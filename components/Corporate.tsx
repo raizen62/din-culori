@@ -22,6 +22,7 @@ const EVENT_TYPES = [
   { title: 'Gale & petreceri', description: 'Petreceri de Crăciun, aniversări de companie, premieri' },
   { title: 'Lansări de produs', description: 'Momentul reveal, produsul în prim-plan, reacțiile invitaților' },
   { title: 'Activări de brand', description: 'Festivaluri, târguri și standuri cu identitatea brandului' },
+  { title: 'Portrete corporate', description: 'Headshot-uri pentru LinkedIn, site și prezentarea echipei' },
 ];
 
 const DELIVERABLES = [
@@ -149,36 +150,66 @@ export default function Corporate() {
             </figcaption>
           </figure>
 
-          <div className="flex flex-col gap-6 md:col-span-4 md:mt-24">
-            <figure data-reveal data-reveal-delay="0.12" data-bloom className="bloom group relative">
-              <div className="relative aspect-[3/2] overflow-hidden">
-                <Image
-                  src="/images/carousel/carousel_5.jpg"
-                  alt="Concert la un eveniment de brand - fotografie Din Culori"
-                  fill
-                  sizes="(min-width: 768px) 33vw, 100vw"
-                  className="bloom-img object-cover group-hover:scale-[1.04]"
-                />
-              </div>
-            </figure>
-            <figure data-reveal data-reveal-delay="0.2" data-bloom className="bloom group relative">
-              <div className="relative aspect-[3/2] overflow-hidden">
-                <Image
-                  src="/images/carousel/carousel_4.jpg"
-                  alt="Stand de brand la un eveniment - fotografie Din Culori"
-                  fill
-                  sizes="(min-width: 768px) 33vw, 100vw"
-                  className="bloom-img object-cover group-hover:scale-[1.04]"
-                />
-              </div>
-              <figcaption className="mt-3 flex items-baseline justify-between border-b border-[var(--hairline-soft)] pb-3">
-                <span className="font-serif text-lg italic text-[var(--cream)]">Activări de brand</span>
-                <span className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[var(--cream-30)]">
-                  Detalii
-                </span>
-              </figcaption>
-            </figure>
-          </div>
+          <figure
+            data-reveal
+            data-reveal-delay="0.12"
+            data-bloom
+            className="bloom group relative md:col-span-4 md:mt-24"
+          >
+            <div className="relative aspect-[2/3] overflow-hidden">
+              <Image
+                src="/images/corporate_portret.jpg"
+                alt="Portret profesional corporate - fotografie Din Culori"
+                fill
+                sizes="(min-width: 768px) 33vw, 100vw"
+                className="bloom-img object-cover group-hover:scale-[1.04]"
+              />
+            </div>
+            <figcaption className="mt-3 flex items-baseline justify-between border-b border-[var(--hairline-soft)] pb-3">
+              <span className="font-serif text-lg italic text-[var(--cream)]">Portrete profesionale</span>
+              <span className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[var(--cream-30)]">
+                Headshots
+              </span>
+            </figcaption>
+          </figure>
+
+          <figure
+            data-reveal
+            data-bloom
+            className="bloom group relative md:col-span-5 md:col-start-2 md:-mt-6"
+          >
+            <div className="relative aspect-[3/2] overflow-hidden">
+              <Image
+                src="/images/carousel/carousel_5.jpg"
+                alt="Concert la un eveniment de brand - fotografie Din Culori"
+                fill
+                sizes="(min-width: 768px) 42vw, 100vw"
+                className="bloom-img object-cover group-hover:scale-[1.04]"
+              />
+            </div>
+          </figure>
+          <figure
+            data-reveal
+            data-reveal-delay="0.12"
+            data-bloom
+            className="bloom group relative md:col-span-5 md:mt-16"
+          >
+            <div className="relative aspect-[3/2] overflow-hidden">
+              <Image
+                src="/images/carousel/carousel_4.jpg"
+                alt="Stand de brand la un eveniment - fotografie Din Culori"
+                fill
+                sizes="(min-width: 768px) 42vw, 100vw"
+                className="bloom-img object-cover group-hover:scale-[1.04]"
+              />
+            </div>
+            <figcaption className="mt-3 flex items-baseline justify-between border-b border-[var(--hairline-soft)] pb-3">
+              <span className="font-serif text-lg italic text-[var(--cream)]">Activări de brand</span>
+              <span className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[var(--cream-30)]">
+                Detalii
+              </span>
+            </figcaption>
+          </figure>
         </div>
 
         {/* Event types — big editorial index */}
