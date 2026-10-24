@@ -33,7 +33,7 @@ When building for production, run `npm run build` - this creates the `/out` fold
 
 Single-page layout composed in `app/page.tsx`:
 - `app/layout.tsx` - Root layout: fonts, `StructuredData`, experience layer (`SmoothScroll`, `Preloader`, `CustomCursor`, `Grain`), `Navigation`, `Footer`
-- Section order on the page: `Hero` → `Marquee` → `Manifesto` → `Photobooth` → `Gallery` → `About` → `Contact`
+- Section order on the page: `Hero` → `Marquee` → `Manifesto` → `Photobooth` → `Corporate` → `Gallery` → `About` → `Contact`
 - All interactive components are client components (`'use client'`)
 
 ### Animation System (GSAP + Lenis)
@@ -43,7 +43,7 @@ Single-page layout composed in `app/page.tsx`:
 - `lib/scroll.ts` - Lenis singleton (`setLenis`/`getLenis`), `scrollToId(id)` (Lenis-powered anchor scroll with nav offset and post-glide drift correction), `prefersReducedMotion()`.
 - `components/fx/SmoothScroll.tsx` - creates Lenis, syncs it with ScrollTrigger via `gsap.ticker`, exposes `window.lenis` (used in dev tooling). Skipped entirely under `prefers-reduced-motion`.
 - `components/fx/Preloader.tsx` - counter + spectrum-line load screen; dispatches the `dc:reveal` window event (exported as `REVEAL_EVENT`) when the curtain lifts. Hero and Navigation listen for it to start their intros (each has a fallback timeout).
-- `components/fx/CustomCursor.tsx` - dot + ring cursor on fine pointers only; elements with `data-cursor-label="Vezi"` grow the ring into a labelled disc.
+- `components/fx/CustomCursor.tsx` - dot + ring cursor on fine pointers only; elements with `data-cursor-label="Vezi"` grow the ring into a labelled disc (keep labels to ~4 letters; longer ones overflow the disc).
 - `components/fx/Grain.tsx` - fixed film-grain overlay.
 - **Respect reduced motion** in any new animation: check `prefersReducedMotion()` and set final states instead.
 
@@ -55,12 +55,12 @@ Single-page layout composed in `app/page.tsx`:
 
 - Palette: `--ink` (near-black warm), `--ink-2`/`--ink-3` (panels), `--cream` (+ `--cream-70/50/30` alphas), `--terracotta` (accent), `--hairline`/`--hairline-soft` (borders), `--spectrum` (brand gradient).
 - shadcn-style tokens (`--background`, `--primary`, …) are mapped onto this dark palette.
-- Utility classes: `.text-spectrum` (animated gradient text), `.text-stroke-cream` (outline type), `.spectrum-line`, `.link-line` (gradient underline grow, `data-active="true"` keeps it on), `.bloom`/`.bloom-img`/`.in-bloom` (desaturate → color), `.grain`, `.marquee-track`.
+- Utility classes: `.text-spectrum` (animated gradient text), `.text-stroke-cream` (outline type), `.spectrum-line`, `.link-line` (gradient underline revealed left→right by animating `mask-size`, faded out at full width; `data-active="true"` keeps it on). Don't animate it with `scaleX`/`clip-path`/opacity-on-enter: anything GPU-composited draws the 1px line softer mid-animation and it visibly thins when it settles. Its transitions are written as longhands because the CSS minifier rewrites a mixed `mask-size`/`opacity` shorthand (it turned `opacity 0s` into a fade) — check the built CSS in `out/_next/static/chunks/*.css` after touching it, `.bloom`/`.bloom-img`/`.in-bloom` (desaturate → color), `.grain`, `.marquee-track`.
 - Fonts (loaded in `app/layout.tsx`): **Anton** (`--font-anton`, `font-display`, display headlines, uppercase), **Instrument Sans** (`--font-instrument-sans`, body), **Instrument Serif** italic (`--font-instrument-serif`, `font-serif`, accent words), **Shinier** (`--font-shinier`, logo + signature). All Google fonts use `latin-ext` for Romanian diacritics.
 
 ### Component Patterns
 
-**1. Section anatomy** — every section follows: section label row (spectrum dash + numbered `0X — Label` uppercase micro-type), huge Anton heading (often with a serif-italic spectrum subline), content, all revealed via `data-reveal` + `revealWithin(sectionRef)` in a `useGSAP` hook. Section IDs for anchors: `photobooth`, `gallery`, `about`, `contact`.
+**1. Section anatomy** — every section follows: section label row (spectrum dash + numbered `0X — Label` uppercase micro-type), huge Anton heading (often with a serif-italic spectrum subline), content, all revealed via `data-reveal` + `revealWithin(sectionRef)` in a `useGSAP` hook. Section IDs for anchors: `photobooth`, `corporate`, `gallery`, `about`, `contact`.
 
 **2. Image handling**
 - Hero slideshow and section images use Next.js `Image`; Gallery uses `<img>` (lightbox compatibility — the lint warning is accepted)
@@ -69,9 +69,11 @@ Single-page layout composed in `app/page.tsx`:
 
 **3. Hero slideshow** — GSAP crossfade + Ken Burns (no carousel lib). Slides in `HERO_SLIDES`, interval `SLIDE_MS`, spectrum progress bar and `0X / 06` counter, mouse parallax on fine pointers.
 
-**4. Gallery** — asymmetric 12-col editorial grid: column spans + vertical stagger come from the `LAYOUT` cycle, while each photo keeps its **true aspect ratio** (`ratio` field per image, `'4/5'` or `'2/3'`) so people are never cropped. Category filters with superscript counts (no pagination — all images of the active category render), `yet-another-react-lightbox` on click. Per-item ScrollTriggers are rebuilt inside a `gsap.context` in a `useEffect` keyed by the active category. When adding a photo, set `ratio` to match the file's orientation.
+**4. Gallery** — asymmetric 12-col editorial grid: column spans + vertical stagger come from the `LAYOUT` cycle, while each photo keeps its **true aspect ratio** (`ratio` field per image, `'4/5'`, `'2/3'` or landscape `'3/2'` — mapped via `RATIO_CLASS`; landscape items skip `LAYOUT` and sit wide and centered on their own row) so people are never cropped. Category filters with superscript counts (no pagination — all images of the active category render), `yet-another-react-lightbox` on click. Per-item ScrollTriggers are rebuilt inside a `gsap.context` in a `useEffect` keyed by the active category. When adding a photo, set `ratio` to match the file's orientation.
 
-**5. Navigation** — fixed bar (blurs after 50px scroll), desktop links with numbered labels, mobile full-screen overlay menu animated per-toggle in the `isOpen` effect; scroll locking via `lenis.stop()/start()`.
+**5. Activations reel** — `components/ActivationsReel.tsx`, rendered full-bleed inside `Corporate` (between the event-type index and the photobooth block). On `lg` + no reduced motion it pins and turns vertical scroll into a horizontal glide (`gsap.matchMedia`, `containerAnimation` for per-frame bloom, counter + spectrum progress; no skew or in-frame parallax — the client found it wobbly). Below `lg` or under reduced motion it is a native swipe strip (`snap-x`) with photos already in bloom. Being a child of `Corporate`, its pin is created before the sections below it, which keeps their trigger positions right.
+
+**6. Navigation** — fixed bar (blurs after 50px scroll), desktop links with numbered labels and a scroll spy (one ScrollTrigger per section, `refreshPriority: -1` so it measures after the Corporate pin) that sets `data-active` on the current section's link, mobile full-screen overlay menu animated per-toggle in the `isOpen` effect; scroll locking via `lenis.stop()/start()`.
 
 ### Data Management
 
@@ -84,6 +86,10 @@ Categories must exist in the `CATEGORIES` array (key + Romanian label) in the sa
 **Hero Slides** - `components/Hero.tsx`, `HERO_SLIDES` array: `{ id, src, alt }`.
 
 **Photobooth pricing/features** - `components/Photobooth.tsx`: `PRICING_TIERS` (name, duration, price, icon, popular, features; `(upgraded)` suffix renders a trend icon) and `FEATURES`.
+
+**Corporate** - `components/Corporate.tsx`: `EVENT_TYPES`, `DELIVERABLES`, `PROCESS`, `QUOTE_CHECKLIST`, plus a corporate photobooth block (`PHOTOBOOTH_PERKS`, `PHOTOBOOTH_USES`, own pre-filled `PHOTOBOOTH_MESSAGE`). No fixed prices — the quote CTAs open WhatsApp with pre-filled Romanian messages plus a tel: link.
+
+**Brand activations** - `components/ActivationsReel.tsx`, `ACTIVATIONS` array: `{ src, ratio, title, tag }` (`ratio` `'2/3'` or `'3/2'`, files in `public/images/activari/`). Captions are generic on purpose — no brand names.
 
 **Contact Information** - `components/Contact.tsx` (`CONTACT_METHODS`) and `components/Footer.tsx` (`SOCIALS` + phone).
 

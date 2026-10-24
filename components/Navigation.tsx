@@ -3,12 +3,13 @@
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { gsap, useGSAP } from '@/lib/animations';
+import { gsap, ScrollTrigger, useGSAP } from '@/lib/animations';
 import { scrollToId, getLenis } from '@/lib/scroll';
 import { REVEAL_EVENT } from '@/components/fx/Preloader';
 
 const NAV_LINKS = [
   { name: 'Photobooth', id: 'photobooth' },
+  { name: 'Corporate', id: 'corporate' },
   { name: 'Galerie', id: 'gallery' },
   { name: 'Despre mine', id: 'about' },
   { name: 'Contact', id: 'contact' },
@@ -17,6 +18,7 @@ const NAV_LINKS = [
 export default function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [activeId, setActiveId] = useState<string | null>(null);
   const barRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
 
@@ -24,6 +26,27 @@ export default function Navigation() {
     const onScroll = () => setIsScrolled(window.scrollY > 50);
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  // Scroll spy: the link of the section under the middle of the screen stays underlined.
+  useEffect(() => {
+    const triggers = NAV_LINKS.flatMap((link) => {
+      const el = document.getElementById(link.id);
+      if (!el) return [];
+      return ScrollTrigger.create({
+        trigger: el,
+        start: 'top center',
+        end: 'bottom center',
+        // Refresh after the sections' own triggers (incl. the Corporate pin) so
+        // these positions include the pin spacing.
+        refreshPriority: -1,
+        onToggle: (self) => {
+          if (self.isActive) setActiveId(link.id);
+          else setActiveId((cur) => (cur === link.id ? null : cur));
+        },
+      });
+    });
+    return () => triggers.forEach((t) => t.kill());
   }, []);
 
   // Bar slides in once the preloader curtain lifts.
@@ -131,7 +154,9 @@ export default function Navigation() {
                     e.preventDefault();
                     goTo(link.id);
                   }}
-                  className="link-line text-[11px] font-semibold uppercase tracking-[0.22em] text-[var(--cream-70)] transition-colors hover:text-[var(--cream)]"
+                  data-active={activeId === link.id}
+                  aria-current={activeId === link.id ? 'true' : undefined}
+                  className="link-line text-[11px] font-semibold uppercase tracking-[0.22em] text-[var(--cream-70)] transition-colors hover:text-[var(--cream)] data-[active=true]:text-[var(--cream)]"
                 >
                   <span className="mr-1.5 font-serif italic normal-case tracking-normal text-[var(--cream-30)]">
                     0{i + 1}

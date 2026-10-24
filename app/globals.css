@@ -233,18 +233,39 @@ html.dc-cursor [role="button"] {
   content: "";
   position: absolute;
   left: 0;
-  bottom: -3px;
-  height: 1px;
+  bottom: -4px;
+  height: 2px;
   width: 100%;
   background: var(--spectrum);
-  transform: scaleX(0);
-  transform-origin: right;
-  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  /* Revealed by animating mask-size. Not scaleX / clip-path: those can be handed to
+     the GPU compositor mid-animation (drawn soft and fuller) and repainted crisp and
+     thinner when they settle. A mask-size change is painted the same way every frame,
+     and the gradient never stretches. */
+  -webkit-mask-image: linear-gradient(#000, #000);
+  mask-image: linear-gradient(#000, #000);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 0% 100%;
+  mask-size: 0% 100%;
+  opacity: 0;
+  /* Exit: fade out at full width, then reset the mask once invisible. */
+  /* Longhands on purpose: the build's CSS minifier rewrites a `transition`
+     shorthand that mixes mask-size and opacity and turns "opacity 0s" into an
+     opacity fade, which puts the line on a GPU layer while it animates. */
+  transition-property: opacity, mask-size;
+  transition-duration: 0.35s, 0s;
+  transition-timing-function: ease, linear;
+  transition-delay: 0s, 0.35s;
 }
 .link-line:hover::after,
 .link-line[data-active="true"]::after {
-  transform: scaleX(1);
-  transform-origin: left;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  opacity: 1;
+  transition-property: mask-size;
+  transition-duration: 0.45s;
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: 0s;
 }
 
 @media (prefers-reduced-motion: reduce) {
