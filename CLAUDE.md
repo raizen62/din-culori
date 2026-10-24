@@ -71,7 +71,9 @@ Single-page layout composed in `app/page.tsx`:
 
 **4. Gallery** — asymmetric 12-col editorial grid: column spans + vertical stagger come from the `LAYOUT` cycle, while each photo keeps its **true aspect ratio** (`ratio` field per image, `'4/5'`, `'2/3'` or landscape `'3/2'` — mapped via `RATIO_CLASS`; landscape items skip `LAYOUT` and sit wide and centered on their own row) so people are never cropped. Category filters with superscript counts (no pagination — all images of the active category render), `yet-another-react-lightbox` on click. Per-item ScrollTriggers are rebuilt inside a `gsap.context` in a `useEffect` keyed by the active category. When adding a photo, set `ratio` to match the file's orientation.
 
-**5. Navigation** — fixed bar (blurs after 50px scroll), desktop links with numbered labels, mobile full-screen overlay menu animated per-toggle in the `isOpen` effect; scroll locking via `lenis.stop()/start()`.
+**5. Activations reel** — `components/ActivationsReel.tsx`, rendered full-bleed inside `Corporate` (between the event-type index and the photobooth block). On `lg` + no reduced motion it pins and turns vertical scroll into a horizontal glide (`gsap.matchMedia`, `containerAnimation` for per-frame bloom + inner parallax, velocity skew, counter + spectrum progress). Below `lg` or under reduced motion it is a native swipe strip (`snap-x`) with photos already in bloom. Being a child of `Corporate`, its pin is created before the sections below it, which keeps their trigger positions right.
+
+**6. Navigation** — fixed bar (blurs after 50px scroll), desktop links with numbered labels, mobile full-screen overlay menu animated per-toggle in the `isOpen` effect; scroll locking via `lenis.stop()/start()`.
 
 ### Data Management
 
@@ -86,6 +88,8 @@ Categories must exist in the `CATEGORIES` array (key + Romanian label) in the sa
 **Photobooth pricing/features** - `components/Photobooth.tsx`: `PRICING_TIERS` (name, duration, price, icon, popular, features; `(upgraded)` suffix renders a trend icon) and `FEATURES`.
 
 **Corporate** - `components/Corporate.tsx`: `EVENT_TYPES`, `DELIVERABLES`, `PROCESS`, `QUOTE_CHECKLIST`, plus a corporate photobooth block (`PHOTOBOOTH_PERKS`, `PHOTOBOOTH_USES`, own pre-filled `PHOTOBOOTH_MESSAGE`). No fixed prices — the quote CTAs open WhatsApp with pre-filled Romanian messages plus a tel: link.
+
+**Brand activations** - `components/ActivationsReel.tsx`, `ACTIVATIONS` array: `{ src, ratio, title, tag }` (`ratio` `'2/3'` or `'3/2'`, files in `public/images/activari/`). Captions are generic on purpose — no brand names.
 
 **Contact Information** - `components/Contact.tsx` (`CONTACT_METHODS`) and `components/Footer.tsx` (`SOCIALS` + phone).
 

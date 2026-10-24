@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { Camera, Images, Megaphone, MessageCircle, Phone } from 'lucide-react';
 import { gsap, ScrollTrigger, useGSAP, revealWithin } from '@/lib/animations';
 import { prefersReducedMotion } from '@/lib/scroll';
+import ActivationsReel from '@/components/ActivationsReel';
 
 const WHATSAPP_MESSAGE =
   'Bună ziua! Aș dori o ofertă pentru un eveniment corporate.\n' +
@@ -246,6 +247,12 @@ export default function Corporate() {
           </ul>
         </div>
 
+      </div>
+
+      {/* Full-bleed horizontal reel of brand activations */}
+      <ActivationsReel ctaHref={WHATSAPP_HREF} />
+
+      <div className="relative mx-auto max-w-[1600px] px-6 md:px-12">
         {/* Corporate photobooth */}
         <div className="relative mb-24 md:mb-32">
           <div className="grid gap-14 lg:grid-cols-12 lg:items-center lg:gap-16">
