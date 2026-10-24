@@ -233,8 +233,8 @@ html.dc-cursor [role="button"] {
   content: "";
   position: absolute;
   left: 0;
-  bottom: -3px;
-  height: 1px;
+  bottom: -4px;
+  height: 2px;
   width: 100%;
   background: var(--spectrum);
   /* Revealed by animating mask-size. Not scaleX / clip-path: those can be handed to
