@@ -238,13 +238,20 @@ html.dc-cursor [role="button"] {
   width: 100%;
   background: var(--spectrum);
   transform: scaleX(0);
-  transform-origin: right;
-  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  transform-origin: left;
+  opacity: 0;
+  /* Exit: fade out at full width, then reset the scale once invisible. */
+  transition:
+    opacity 0.35s ease,
+    transform 0s linear 0.35s;
 }
 .link-line:hover::after,
 .link-line[data-active="true"]::after {
   transform: scaleX(1);
-  transform-origin: left;
+  opacity: 1;
+  transition:
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0s;
 }
 
 @media (prefers-reduced-motion: reduce) {

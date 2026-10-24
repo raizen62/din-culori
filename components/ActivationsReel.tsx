@@ -34,7 +34,6 @@ export default function ActivationsReel({ ctaHref }: { ctaHref: string }) {
       mm.add('(min-width: 1024px) and (prefers-reduced-motion: no-preference)', () => {
         const track = trackRef.current!;
         const distance = () => Math.max(0, track.offsetWidth - window.innerWidth);
-        const skewTo = gsap.quickTo(items, 'skewX', { duration: 0.6, ease: 'power3.out' });
 
         const glide = gsap.to(track, {
           x: () => -distance(),
@@ -52,9 +51,7 @@ export default function ActivationsReel({ ctaHref }: { ctaHref: string }) {
               const i = Math.min(items.length, Math.round(self.progress * (items.length - 1)) + 1);
               if (counterRef.current) counterRef.current.textContent = pad(i);
               gsap.set(progressRef.current, { scaleX: self.progress });
-              skewTo(gsap.utils.clamp(-6, 6, self.getVelocity() / -400));
             },
-            onScrubComplete: () => skewTo(0),
           },
         });
 
@@ -74,25 +71,6 @@ export default function ActivationsReel({ ctaHref }: { ctaHref: string }) {
             end: 'right 30%',
             toggleClass: { targets: item, className: 'in-bloom' },
           });
-          // Inner parallax: the image slides inside its frame.
-          const inner = item.querySelector('[data-reel-img]');
-          if (inner) {
-            gsap.fromTo(
-              inner,
-              { xPercent: 6 },
-              {
-                xPercent: -6,
-                ease: 'none',
-                scrollTrigger: {
-                  trigger: item,
-                  containerAnimation: glide,
-                  start: 'left right',
-                  end: 'right left',
-                  scrub: true,
-                },
-              }
-            );
-          }
         });
       });
 
@@ -159,7 +137,7 @@ export default function ActivationsReel({ ctaHref }: { ctaHref: string }) {
                 }`}
                 style={{ aspectRatio: a.ratio }}
               >
-                <div data-reel-img className="absolute inset-y-0 -inset-x-[7%]">
+                <div className="absolute inset-0">
                   <Image
                     src={a.src}
                     alt={`${a.title} - fotografie de eveniment corporate Din Culori`}
@@ -184,7 +162,6 @@ export default function ActivationsReel({ ctaHref }: { ctaHref: string }) {
             href={ctaHref}
             target="_blank"
             rel="noopener noreferrer"
-            data-cursor-label="Scrie-mi"
             className="group relative flex w-[72vw] shrink-0 snap-center flex-col justify-between self-stretch border border-[var(--hairline)] bg-[var(--ink-2)] p-7 transition-colors duration-500 hover:border-[var(--terracotta)] sm:w-[44vw] lg:h-[56vh] lg:w-[38vh] lg:self-auto lg:p-9"
           >
             <span className="spectrum-line absolute inset-x-0 top-0 h-[2px]" />
