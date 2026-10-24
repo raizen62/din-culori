@@ -37,7 +37,6 @@ const PHOTOBOOTH_PERKS = [
   'Poze printate și digitale nelimitate, pe loc',
   'Fundal textil sau digital, adaptat brandului',
   'Accesorii fizice și plăcuțe cu mesaje personalizate',
-  'Ecran de prezentare și Social Share Station',
   'Galerie online cu parolă pentru toți invitații',
 ];
 
