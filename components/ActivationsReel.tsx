@@ -13,6 +13,7 @@ const ACTIVATIONS = [
   { src: '/images/activari/activare_3.jpg', ratio: '2/3', title: 'Activare de brand', tag: 'Interacțiune' },
   { src: '/images/activari/activare_4.jpg', ratio: '3/2', title: 'Experiență interactivă', tag: 'Joc' },
   { src: '/images/activari/activare_5.jpg', ratio: '3/2', title: 'Scenografie de brand', tag: 'Detalii' },
+  { src: '/images/activari/activare_6.jpg', ratio: '3/2', title: 'Stand de brand', tag: 'Ospitalitate' },
 ];
 
 const pad = (n: number) => String(n).padStart(2, '0');
