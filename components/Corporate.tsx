@@ -260,7 +260,7 @@ export default function Corporate() {
                     width={1200}
                     height={800}
                     sizes="(min-width: 1024px) 45vw, 100vw"
-                    className="bloom-img h-auto w-full object-cover group-hover:scale-[1.04]"
+                    className="bloom-img h-auto w-full object-cover"
                   />
                 </div>
               </figure>
