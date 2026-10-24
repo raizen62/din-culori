@@ -126,7 +126,7 @@ export default function Photobooth() {
   );
 
   const formatSlides = [
-    { src: '/photobooth.jpeg', title: 'Format clasic 10×15' },
+    { src: '/images/photobooth_print.jpg', title: 'Format clasic 10×15' },
     { src: '/photobooth_strip1.png', title: 'Format strip 2×6' },
   ];
 
@@ -178,10 +178,10 @@ export default function Photobooth() {
           >
             <div className="overflow-hidden">
               <Image
-                src="/photobooth.jpeg"
+                src="/images/photobooth_print.jpg"
                 alt="Photobooth format clasic 10×15 - Din Culori București"
-                width={1200}
-                height={800}
+                width={1800}
+                height={1200}
                 className="bloom-img h-auto w-full object-cover group-hover:scale-[1.04]"
               />
             </div>

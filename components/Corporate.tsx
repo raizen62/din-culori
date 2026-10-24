@@ -2,9 +2,9 @@
 
 import { useRef } from 'react';
 import Image from 'next/image';
-import { Camera, Images, Megaphone, MessageCircle, Phone, ArrowUp } from 'lucide-react';
+import { Camera, Images, Megaphone, MessageCircle, Phone } from 'lucide-react';
 import { gsap, ScrollTrigger, useGSAP, revealWithin } from '@/lib/animations';
-import { prefersReducedMotion, scrollToId } from '@/lib/scroll';
+import { prefersReducedMotion } from '@/lib/scroll';
 
 const WHATSAPP_MESSAGE =
   'Bună ziua! Aș dori o ofertă pentru un eveniment corporate.\n' +
@@ -303,14 +303,6 @@ export default function Corporate() {
                   <MessageCircle className="h-4 w-4" strokeWidth={1.8} />
                   Cere ofertă photobooth
                 </a>
-                <button
-                  type="button"
-                  onClick={() => scrollToId('photobooth')}
-                  className="flex items-center justify-center gap-2.5 whitespace-nowrap border border-[var(--hairline)] px-6 py-4 text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--cream)] transition-all duration-300 hover:border-[var(--cream)] hover:bg-[var(--cream)] hover:text-[var(--ink)]"
-                >
-                  <ArrowUp className="h-4 w-4" strokeWidth={1.8} />
-                  Vezi ce include
-                </button>
               </div>
             </div>
           </div>
