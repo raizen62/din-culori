@@ -233,12 +233,14 @@ export default function Corporate() {
                   />
                 </div>
               </figure>
+              {/* Badge sits over the print's own "DIN.CULORI" mark (~82% / 89%).
+                  Centering lives on the inner span: the outer div is GSAP-tweened. */}
               <div
                 data-reveal
                 data-reveal-delay="0.25"
-                className="absolute -left-2 -top-16 flex h-20 w-20 items-center justify-center sm:-top-12 sm:h-24 sm:w-24 md:-left-3 md:-top-10 md:h-28 md:w-28"
+                className="absolute left-[82%] top-[89%] h-16 w-16 sm:h-20 sm:w-20 md:h-24 md:w-24"
               >
-                <span className="flex h-full w-full -rotate-12 items-center justify-center rounded-full bg-[var(--terracotta)] text-center font-display text-[10px] sm:text-[11px] uppercase leading-tight tracking-wide text-[var(--ink)] md:text-xs">
+                <span className="flex h-full w-full -translate-x-1/2 -translate-y-1/2 -rotate-12 items-center justify-center rounded-full bg-[var(--terracotta)] text-center font-display text-[9px] uppercase leading-tight tracking-wide text-[var(--ink)] shadow-[0_12px_30px_-10px_rgba(0,0,0,0.7)] sm:text-[10px] md:text-[11px]">
                   Logo-ul
                   <br />
                   tău aici
